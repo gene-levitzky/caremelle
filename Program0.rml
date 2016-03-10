@@ -1,0 +1,5 @@
+define myFunction:
+	define add:
+		a, 0 = a;
+		a, b = add(inc(a), dec(b)).
+	num1, num2 = add(num1, num2).

@@ -1,0 +1,8 @@
+define appendDigitWithCarry:
+    9, 'c' space = 'c' 0 space;
+    1 a, 'c' space = 'c' inc(a) space;
+    1 a, '' = 'c' a;
+    1 a, space = 'c' a space;
+    a, 'c' space = inc(a) space;
+    a, '' = a;
+    a, space = a space.

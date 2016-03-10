@@ -1,0 +1,14 @@
+define add:
+	define appendDigitWithCarry:
+		9, 'c' space = 'c' 0 space;
+		'1' a, 'c' space = 'c' inc(a) space;
+		a, 'c' space = inc(a) space;
+		a, space = a space.
+	define singleDigitAdd:
+		a, 0 = a;
+		a, b = add(inc(a), dec(b)).
+	define adder:
+		'', '', space = space;
+		'', n2, space = adder(n2, space, '');
+		n1, '', space = adder(n1, space, '');
+		n1, n2, space = 

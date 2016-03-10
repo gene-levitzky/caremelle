@@ -1,0 +1,8 @@
+define myFunction:
+	define add:
+		a, 0 = a;
+		a, b = add(inc(a), dec(b)).
+	define mult:
+		a, 1 = a;
+		a, b = add(a, mult(a, dec(b))).
+	num1, num2 = mult(num1, num2).

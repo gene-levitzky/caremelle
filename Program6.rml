@@ -1,0 +1,15 @@
+define equals:
+	a, a = 'true';
+	a, b = 'false'.
+	
+define blankOut: out('')out('')out('')out('')out('')out('')out('')out('')out('')out('')out('')out('')out('')out('').
+
+define guess:
+	define play:
+		'play' = blankOut() out('Your secret is safe! Now make a guess.') play(equals(secret, in()));
+		'true' = out('You guessed correct!');
+		'false' = out('Wrong guess. Try again.') play(equals(secret, in())).
+	secret = play('play').
+
+out('Enter a secret to guess.')
+guess(in())

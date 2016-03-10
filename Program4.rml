@@ -1,0 +1,5 @@
+define f0:
+	define f1:
+		arg0 = arg0 arg0.
+	arg1 = f1(arg1).
+f0('A')

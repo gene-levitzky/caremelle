@@ -1,0 +1,6 @@
+define mult:
+	define add:
+		a, 0 = a;
+		a, b = add(inc(a), dec(b)).
+	a, 1 = a;
+	a, b = add(a, mult(a, dec(b))).

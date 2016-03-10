@@ -1,0 +1,10 @@
+define lt:
+	a, a = 'false';
+	'-' a, '-' b = lt(b, a);
+	'-' a, 0 = 'true';
+	a, 0 = 'false';
+	a, b = lt(dec(a), dec(b)).
+out(lt(5,7))
+out(lt(-5,-7))
+out(lt(0,7))
+out(lt(7,7))
