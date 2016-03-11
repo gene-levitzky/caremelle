@@ -4,15 +4,15 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import caremelle.AtomicExpression;
-import caremelle.AtomicExpressionIdentifier;
-import caremelle.AtomicExpressionLiteral;
-import caremelle.AtomicParameter;
-import caremelle.Expression;
-import caremelle.Function;
-import caremelle.Parameter;
-import caremelle.Parameters;
-import caremelle.Statement;
+import aremelle.AtomicExpression;
+import aremelle.AtomicExpressionIdentifier;
+import aremelle.AtomicExpressionLiteral;
+import aremelle.AtomicParameter;
+import aremelle.Expression;
+import aremelle.Function;
+import aremelle.Parameter;
+import aremelle.Parameters;
+import aremelle.Statement;
 import exceptions.NoMatchingSignatureException;
 import exceptions.NotANumberException;
 import exceptions.UndefinedVariableException;

@@ -1,7 +1,9 @@
-package caremelle;
+package aremelle;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import share.ListWrapper;
 
 public class Parameter extends ListWrapper<AtomicParameter>{
 	

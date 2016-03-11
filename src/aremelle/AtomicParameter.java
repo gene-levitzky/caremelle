@@ -1,4 +1,6 @@
-package caremelle;
+package aremelle;
+
+import share.NamedEntity;
 
 public class AtomicParameter extends NamedEntity {
 	

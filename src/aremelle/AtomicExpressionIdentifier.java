@@ -1,5 +1,6 @@
-package caremelle;
+package aremelle;
 
+import share.NamedEntity;
 import exceptions.UndefinedVariableException;
 
 public class AtomicExpressionIdentifier extends NamedEntity implements AtomicExpression {

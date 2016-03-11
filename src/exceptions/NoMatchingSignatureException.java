@@ -1,6 +1,6 @@
 package exceptions;
 
-import caremelle.Argument;
+import aremelle.Argument;
 
 public class NoMatchingSignatureException extends Throwable {
 

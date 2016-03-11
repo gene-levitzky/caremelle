@@ -1,4 +1,6 @@
-package caremelle;
+package aremelle;
+
+import share.ListWrapper;
 
 public class Parameters extends ListWrapper<Parameter> {
 

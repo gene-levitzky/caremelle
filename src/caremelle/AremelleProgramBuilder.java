@@ -1,4 +1,4 @@
-package antlr;
+package caremelle;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -7,6 +7,8 @@ import java.io.IOException;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
+import antlr.AremelleLexer;
+import antlr.AremelleParser;
 import antlr.AremelleParser.ArgumentsContext;
 import antlr.AremelleParser.AtomicExpressionContext;
 import antlr.AremelleParser.AtomicParameterContext;
@@ -17,21 +19,21 @@ import antlr.AremelleParser.ParameterContext;
 import antlr.AremelleParser.ParametersContext;
 import antlr.AremelleParser.ProgramContext;
 import antlr.AremelleParser.StatementContext;
-import caremelle.AtomicExpression;
-import caremelle.AtomicExpressionFunctionCall;
-import caremelle.AtomicExpressionIdentifier;
-import caremelle.AtomicExpressionLiteral;
-import caremelle.AtomicParameter;
-import caremelle.Expression;
-import caremelle.Function;
-import caremelle.Parameter;
-import caremelle.Parameters;
-import caremelle.Program;
-import caremelle.Statement;
+import aremelle.AtomicExpression;
+import aremelle.AtomicExpressionFunctionCall;
+import aremelle.AtomicExpressionIdentifier;
+import aremelle.AtomicExpressionLiteral;
+import aremelle.AtomicParameter;
+import aremelle.Expression;
+import aremelle.Function;
+import aremelle.Parameter;
+import aremelle.Parameters;
+import aremelle.Program;
+import aremelle.Statement;
 
-public class AntlrAremelleProgramBuilder {
+public class AremelleProgramBuilder {
 	
-	public AntlrAremelleProgramBuilder(){}
+	public AremelleProgramBuilder(){}
 	
 	public Program build(FileReader fileReader, String[] args) throws FileNotFoundException, IOException {
 		return parse(new AremelleLexer(new ANTLRInputStream(fileReader)), args);

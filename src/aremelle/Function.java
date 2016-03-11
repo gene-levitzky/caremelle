@@ -1,5 +1,6 @@
-package caremelle;
+package aremelle;
 
+import share.NamedEntity;
 import exceptions.NoMatchingSignatureException;
 import exceptions.NotANumberException;
 import exceptions.UndefinedVariableException;

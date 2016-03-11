@@ -1,4 +1,4 @@
-package caremelle;
+package aremelle;
 
 import java.util.Scanner;
 

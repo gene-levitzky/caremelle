@@ -1,4 +1,4 @@
-package caremelle;
+package share;
 
 public class NamedEntity {
 	
