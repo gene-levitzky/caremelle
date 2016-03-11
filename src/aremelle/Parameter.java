@@ -46,6 +46,15 @@ public class Parameter extends ListWrapper<AtomicParameter>{
 			group++;
 			group += get(i).getNumberOfCaptureGroups();
 		}
+		
+		// check to make sure that back-references match
+		for (AtomicParameter atom : this) {
+			if (atom.getReference() != null 
+					&& !atom.getReference().getValue().equals(atom.getValue())) {
+				return false;
+			}
+		}
+		
 		return true;
 	}
 

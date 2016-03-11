@@ -24,9 +24,6 @@ public class AtomicParameter extends NamedEntity {
 	}
 	
 	public String getRegexp() {
-		if (reference != null) {
-			setRegexp(reference.getValue());
-		}
 		return regexp;
 	}
 	
@@ -74,6 +71,10 @@ public class AtomicParameter extends NamedEntity {
 
 	public void setReference(AtomicParameter reference) {
 		this.reference = reference;		
+	}
+
+	public AtomicParameter getReference() {
+		return this.reference;
 	}
 
 }

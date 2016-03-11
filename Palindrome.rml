@@ -1,0 +1,4 @@
+define palindrome:
+	'.' | '' | {'.'}:a {'.'}:a = 'true';
+	{'.'}:a {'.'}:b = 'false';
+	{'.'}:a middle {'.'}:a = palindrome(middle).

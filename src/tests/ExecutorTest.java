@@ -347,4 +347,26 @@ public class ExecutorTest {
         assertEquals("true", 
         		executor.evaluateProgram(builder.build(new FileReader("Equals.rml"), new String[]{"", ""})));
 	}
+	
+	@Test
+	public void testPalindrome() 
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException {
+		builder = new AremelleProgramBuilder();
+        assertEquals("false", 
+        		executor.evaluateProgram(builder.build(new FileReader("Palindrome.rml"), new String[]{"test"})));
+        assertEquals("true", 
+        		executor.evaluateProgram(builder.build(new FileReader("Palindrome.rml"), new String[]{"otto"})));
+        assertEquals("true", 
+        		executor.evaluateProgram(builder.build(new FileReader("Palindrome.rml"), new String[]{"madamimadam"})));
+        assertEquals("false", 
+        		executor.evaluateProgram(builder.build(new FileReader("Palindrome.rml"), new String[]{"ta"})));
+        assertEquals("true", 
+        		executor.evaluateProgram(builder.build(new FileReader("Palindrome.rml"), new String[]{"aa"})));
+        assertEquals("true", 
+        		executor.evaluateProgram(builder.build(new FileReader("Palindrome.rml"), new String[]{""})));
+	}
 }
