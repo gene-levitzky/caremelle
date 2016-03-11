@@ -1,0 +1,3 @@
+define equals:
+	a, a | '', '' = 'true';
+	a, b | '', b | a, '' = 'false'.

@@ -327,4 +327,24 @@ public class ExecutorTest {
         }
         catch (NoMatchingSignatureException e) {}
 	}
+	
+	@Test
+	public void testEquals() 
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException {
+		builder = new AremelleProgramBuilder();
+        assertEquals("true", 
+        		executor.evaluateProgram(builder.build(new FileReader("Equals.rml"), new String[]{"test", "test"})));
+        assertEquals("false", 
+        		executor.evaluateProgram(builder.build(new FileReader("Equals.rml"), new String[]{"test", "ssd"})));
+        assertEquals("false", 
+        		executor.evaluateProgram(builder.build(new FileReader("Equals.rml"), new String[]{"", "test"})));
+        assertEquals("false", 
+        		executor.evaluateProgram(builder.build(new FileReader("Equals.rml"), new String[]{"test", ""})));
+        assertEquals("true", 
+        		executor.evaluateProgram(builder.build(new FileReader("Equals.rml"), new String[]{"", ""})));
+	}
 }
