@@ -1,10 +1,12 @@
 # caremelle
 
-Presenting an implementation of Aremelle, a simple, stripped down, purely functional programming language. 
+Presenting caremelle: an implementation of Aremelle, a simple, stripped down, purely functional programming language. 
 
-Aremelle's basic unit of execution is the function. A function consists of zero or more recursively nested functions, zero or more statements, each of which maps a set of parameters to some output, and, if no statement is given, a single expression which is evaluated upon the invocation of the (constant or 0-ary) function.
+Aremelle's basic unit of execution is the function. A function consists of zero or more recursively nested functions, zero or more rewrite rules called statements, each of which maps a set of parameters to some output, or, if no statement is given, a single expression which is evaluated upon the invocation of the (constant or 0-ary) function.
 
-### Quick Preview
+## Quick Preview
+
+### Basic Syntax
 
 The simplest Hello World program looks like:
 
@@ -28,7 +30,7 @@ If we want to allow left or right to be empty, then we can write:
     define split:
       left ',' right | {''}:left ',' right | left ',' {''}:right = left.
 
-Note that there are many ways of accomplishing the same result. In all cases the function would be used as follows:
+If the argument passed to split matches any of the patterns separated by a vertical bar, then the left hand side of the rule will be evaluated and returned. Note that there are many ways of accomplishing the same result. In all cases the function would be used as follows:
 
     split('this is the left side, and this is the right side')
     
