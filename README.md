@@ -29,8 +29,15 @@ If we want to allow left or right to be empty, then we can write:
 
     define split:
       left ',' right | {''}:left ',' right | left ',' {''}:right = left.
+      
+Or simply:
 
-If the argument passed to split matches any of the patterns separated by a vertical bar, then the left hand side of the rule will be evaluated and returned. Note that there are many ways of accomplishing the same result. In all cases the function would be used as follows:
+    define split:
+      $left ',' $right = left.
+      
+Where `$parameter` means match anything or nothing.
+
+If the argument passed to split matches any of the patterns separated by a vertical bar, then the right hand side of the rule will be evaluated and returned. Note that there are many ways of accomplishing the same result. In all cases the function would be used as follows:
 
     split('this is the left side, and this is the right side')
     
