@@ -11,7 +11,7 @@ public class AtomicExpressionIdentifier extends NamedEntity implements AtomicExp
 
 	public String evaluate(Scope scope) throws UndefinedVariableException {
 		try {
-			return scope.getAtomicParameter(getName()).getValue();
+			return scope.getParameter(getName()).getValue();
 		} 
 		catch (NullPointerException e) {
 			throw new UndefinedVariableException(getName());

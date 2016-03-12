@@ -62,7 +62,7 @@ public class Parameter extends NamedEntity {
 		Parameter referencedParameter = null;
 		if (regexp.isEmpty() 
 				&& getName() != null 
-				&& (referencedParameter = scope.getAtomicParameter(getName())) != null) {
+				&& (referencedParameter = scope.getParameter(getName())) != null) {
 			setRegexp(referencedParameter.getRegexp());
 		}
 	}

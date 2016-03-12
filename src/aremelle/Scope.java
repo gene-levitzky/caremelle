@@ -44,10 +44,10 @@ public class Scope {
 		return functionNamespace.put(function.getName(), function) != null;
 	}
 	
-	public Parameter getAtomicParameter(String name) {
+	public Parameter getParameter(String name) {
 		Parameter atomicParameter = atomicParameterNamespace.get(name);
 		if (atomicParameter == null && outerScope != null) {
-			atomicParameter = outerScope.getAtomicParameter(name);
+			atomicParameter = outerScope.getParameter(name);
 		}
 		return atomicParameter;
 	}

@@ -9,6 +9,7 @@ import aremelle.AtomicExpressionIdentifier;
 import aremelle.AtomicExpressionLiteral;
 import aremelle.Expression;
 import aremelle.Function;
+import aremelle.Parameter;
 import aremelle.Program;
 import aremelle.RewriteRule;
 import exceptions.NoMatchingSignatureException;
@@ -110,15 +111,22 @@ public class AremelleProgramExecutor {
 				else {
 					if (atom instanceof AtomicExpressionIdentifier) {
 						AtomicExpressionIdentifier identifier = (AtomicExpressionIdentifier) atom;
-						String value = context.getCallingFunction().getScope().getAtomicParameter(identifier.getName()).getValue();
-						if (value != null) {
-							context.appendResult(new Argument(value));
-							context.setAtomIndex(atomIndex + 1);
-							if (context.getAtomIndex() == context.getExpression().size()) {
-								context.setDone(true);
+						Parameter parameter = context.getCallingFunction().getScope().getParameter(identifier.getName());
+						if (parameter != null) {
+							String value = parameter.getValue();
+							if (value != null) {
+								context.appendResult(new Argument(value));
+								context.setAtomIndex(atomIndex + 1);
+								if (context.getAtomIndex() == context.getExpression().size()) {
+									context.setDone(true);
+								}
+								contextStack.push(context);
+								continue main;
 							}
-							contextStack.push(context);
-							continue main;
+							else {
+								System.err.println("Something went terribly wrong.");
+								System.exit(-1);
+							}
 						}
 						else {
 							throw new UndefinedVariableException(identifier.getName());
@@ -134,7 +142,7 @@ public class AremelleProgramExecutor {
 					Function callingFunction = context.getCallingFunction();
 					Function calledFunction = callingFunction.getScope().getFunction(aefc.getName());
 					if (calledFunction == null) {
-						String functionName = callingFunction.getScope().getAtomicParameter(aefc.getName()).getValue();
+						String functionName = callingFunction.getScope().getParameter(aefc.getName()).getValue();
 						if (functionName == null) {
 							throw new UndefinedVariableException(aefc.getName());
 						}

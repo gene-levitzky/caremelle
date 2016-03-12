@@ -48,12 +48,39 @@ public class ExecutorTest {
 	}
 	
 	@Test
+	public void testParameterPersistence() 
+			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+		builder = new AremelleProgramBuilder();
+        Program program = builder.build(new FileReader("examples/Persistence.rml"), new String[]{"nonce", "remember?"});
+        String out = executor.evaluateProgram(program);
+        assertEquals("testing...remember?", out);
+	}
+	
+	@Test(expected=UndefinedVariableException.class)
+	public void testShouldntPersist() 
+			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+		builder = new AremelleProgramBuilder();
+        Program program = builder.build(new FileReader("examples/ShouldntPersist"), new String[]{"dontremember", "1"});
+        String out = executor.evaluateProgram(program);
+        assertEquals("dontremeber", out);
+	}
+	
+	@Test
 	public void testOutterScope() 
 			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build(new FileReader("examples/Scope.rml"), new String[]{"test"});
         String out = executor.evaluateProgram(program);
         assertEquals("test", out);
+	}
+	
+	@Test
+	public void testParameterOverwriting() 
+			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+		builder = new AremelleProgramBuilder();
+        Program program = builder.build(new FileReader("examples/ParameterOverwriting.rml"), new String[]{"3"});
+        String out = executor.evaluateProgram(program);
+        assertEquals("done", out);
 	}
 	
 	@Test
@@ -326,7 +353,7 @@ public class ExecutorTest {
 			, NotANumberException {
 		builder = new AremelleProgramBuilder();
         assertEquals("9", 
-        		executor.evaluateProgram(builder.build("define naiveAdd: aaa, 0 = aaa; aaa, bbb = naiveAdd(inc(aaa), dec(bbb)).", 
+        		executor.evaluateProgram(builder.build("define naiveAdd: a, 0 = a; a, b = naiveAdd(inc(a), dec(b)).", 
         				new String[]{"4", "5"})));
 	}
 	

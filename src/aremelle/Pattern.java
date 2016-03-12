@@ -34,14 +34,18 @@ public class Pattern extends ListWrapper<Parameter>{
 		
 		Matcher matcher = compile(regexpBuffer.toString()).matcher(argument.toString());
 		if (!matcher.find() || matcher.groupCount() != totalNumberOfCapturingGroups) {
-			for (Parameter param : this) {
+			/*for (Parameter param : this) {
 				param.setValue(null);
-			}
+			}*/
 			return false;
 		}
 		int group = 1;
 		for (int i = 0; i < size(); i++) {
 			String match = matcher.group(group);
+			if (get(i).getValue() != null) {
+				System.err.println("Something went wrong.");
+				//System.exit(-1);
+			}
 			get(i).setValue(match);
 			group++;
 			group += get(i).getNumberOfCaptureGroups();
