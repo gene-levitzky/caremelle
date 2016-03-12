@@ -2,7 +2,7 @@
 
 Presenting caremelle: an implementation of Aremelle, a simple, stripped down, purely functional programming language. 
 
-Aremelle's basic unit of execution is the function. A function consists of zero or more recursively nested functions, zero or more rewrite rules called statements, each of which maps a set of parameters to some output, or, if no statement is given, a single expression which is evaluated upon the invocation of the (constant or 0-ary) function.
+Aremelle's basic unit of execution is the function. A function consists of zero or more recursively nested functions, zero or more rewrite rules, each of which maps a set of patterns to some output, or, if no rewrite rule is given, a single expression which is evaluated upon the invocation of the (constant or 0-ary) function.
 
 ## Quick Preview
 
@@ -70,8 +70,9 @@ Here's a function that can be used to determine whether a given string is a pali
     define palindrome:
 	  '.' | '' | {'.'}:a {'.'}:a = 'true';
 	  {'.'}:a {'.'}:b = 'false';
-	  {'.'}:a middle {'.'}:a = palindrome(middle).
+	  {'.'}:a middle {'.'}:a = palindrome(middle);
+	  notAPalindrome = 'false'.
 	  
-Here we have multiple re-write rules or statements. Each one is terminated with a semicolon except for the last one which is terminated by a period. A statement consists of two parts: the left hand side (LHS) and the right hand side (RHS). The LHS consists of a list of signatures separated by a vertical bar, and each signature contains one or more patterns separated by a comma (in the above example, each signature contains only one pattern), and finally each pattern consists of one or more parameters separated by whitespace. In the above example, the first statement specifies `'.'`, `''`, and `{'.'}:a {'.'}:a` as its list of signatures. This means that if the given argument matches any of these patterns, then we evaluate and return the RHS of the statement, `'true'`. Note that the order of statements is important. The first statement to have a matching signature that matches the given argument will be the one whose RHS is evaluated. 
+Here we have multiple re-write rules. Each one is terminated with a semicolon except for the last one which is terminated by a period. A rewrite rule consists of two parts: the left hand side (LHS) and the right hand side (RHS). The LHS consists of a list of signatures separated by a vertical bar, and each signature contains one or more patterns separated by a comma (in the above example, each signature contains only one pattern), and finally each pattern consists of one or more parameters separated by whitespace. In the above example, the first statement specifies `'.'`, `''`, and `{'.'}:a {'.'}:a` as its list of signatures. This means that if the given argument matches any of these patterns, then we evaluate and return the RHS of the statement, `'true'`. Note that the order of the rewrite ules is important. The first rule to have a signature that matches the given argument will be the one whose RHS is evaluated. 
 
-This example also illustrates the notion of back-referencing parameters. The third signature of the first statement and the sole signature of the third statement contain parameters that share the same name, `a`. This means that the value "captured" by the first `a` must match identically with the value "captured" by the second `a` for the argument to match the overall pattern.
+This example also illustrates the notion of back-referencing parameters. The third signature of the first rule and the sole signature of the third rule contain parameters that share the same name, `a`. This means that the value "captured" by the first `a` must match identically with the value "captured" by the second `a` for the argument to match the overall pattern.
