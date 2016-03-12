@@ -64,5 +64,5 @@ define add:
     );
     '-'n, '-'m = '-'add(n, m);
     a '\.' b, c '\.' d = addDecimals(a, b, c, d);
-    whole '\.' part, m | m, whole '\.' part1 = add(whole, m) '.' part;
+    whole '\.' part, m | m, whole '\.' part = add(whole, m) '.' part;
     n, m = add(n, m, '').
