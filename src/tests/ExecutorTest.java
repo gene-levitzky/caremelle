@@ -10,6 +10,7 @@ import java.io.IOException;
 import aremelle.Program;
 import exceptions.NoMatchingSignatureException;
 import exceptions.NotANumberException;
+import exceptions.UndeclaredVariableException;
 import exceptions.UndefinedVariableException;
 
 import org.junit.Before;
@@ -31,7 +32,12 @@ public class ExecutorTest {
 	
 	@Test
 	public void testEcho() 
-			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build("define echo: input = input.", new String[]{"test"});
         String out = executor.evaluateProgram(program);
@@ -40,7 +46,12 @@ public class ExecutorTest {
 	
 	@Test
 	public void testMultiParameterPattern() 
-			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build(new FileReader("examples/MultiParameterPattern"), new String[]{"left,right", "other"});
         String out = executor.evaluateProgram(program);
@@ -49,7 +60,12 @@ public class ExecutorTest {
 	
 	@Test
 	public void testParameterPersistence() 
-			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build(new FileReader("examples/Persistence.rml"), new String[]{"nonce", "remember?"});
         String out = executor.evaluateProgram(program);
@@ -58,7 +74,12 @@ public class ExecutorTest {
 	
 	@Test(expected=UndefinedVariableException.class)
 	public void testShouldntPersist() 
-			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build(new FileReader("examples/ShouldntPersist"), new String[]{"dontremember", "1"});
         String out = executor.evaluateProgram(program);
@@ -67,7 +88,12 @@ public class ExecutorTest {
 	
 	@Test
 	public void testOutterScope() 
-			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build(new FileReader("examples/Scope.rml"), new String[]{"test"});
         String out = executor.evaluateProgram(program);
@@ -76,7 +102,12 @@ public class ExecutorTest {
 	
 	@Test
 	public void testParameterOverwriting() 
-			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build(new FileReader("examples/ParameterOverwriting.rml"), new String[]{"3"});
         String out = executor.evaluateProgram(program);
@@ -85,7 +116,12 @@ public class ExecutorTest {
 	
 	@Test
 	public void testDollarParam() 
-			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build("define echo: $empty = 'it works!'.", new String[]{""});
         String out = executor.evaluateProgram(program);
@@ -94,7 +130,12 @@ public class ExecutorTest {
 	
 	@Test
 	public void testDollarParamSplit() 
-			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
 		
         Program program = builder.build("define split: $left ',' $right = left.", new String[]{"left,right"});
@@ -112,7 +153,12 @@ public class ExecutorTest {
 	
 	@Test
 	public void testCallNestedFunctionDoubleHelper() 
-			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build("define double: define doubleHelper:	b = b b. a = doubleHelper(a) a.", new String[]{"test"});
         String out = executor.evaluateProgram(program);
@@ -121,7 +167,12 @@ public class ExecutorTest {
 	
 	@Test
 	public void testConstant() 
-			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build("define pi: 3.14.", new String[]{"test"});
         String out = executor.evaluateProgram(program);
@@ -134,7 +185,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build("define test: int = inc(int).", new String[]{"1"});
         String out = executor.evaluateProgram(program);
@@ -147,7 +199,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build("define outer: define inner: a = a. b = inner(b).", new String[]{"1"});
         String out = executor.evaluateProgram(program);
@@ -160,7 +213,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build("define outer: a = inc(a) inc(a).", new String[]{"1"});
         String out = executor.evaluateProgram(program);
@@ -173,7 +227,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build("define count: 10 = 'done'; counter = count(inc(counter)).", new String[]{"1"});
         String out = executor.evaluateProgram(program);
@@ -186,7 +241,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build("define echo: output = out(output).", new String[]{"Hello, World!"});
         String out = executor.evaluateProgram(program);
@@ -211,7 +267,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build("define echo: define helper: input = input input. helper(in()).", new String[]{"Hello, World!"});
         //String out = executor.evaluateProgram(program);
@@ -223,7 +280,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build(new FileReader("examples/Program0.rml"), new String[]{"200000", "10000"});
         String out = executor.evaluateProgram(program);
@@ -236,7 +294,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build(new FileReader("examples/Program1.rml"), new String[]{"100000", "2"});
         String out = executor.evaluateProgram(program);
@@ -249,7 +308,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build(new FileReader("examples/Program2.rml"), new String[]{"100000", "2"});
         String out = executor.evaluateProgram(program);
@@ -262,7 +322,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         assertEquals("c52", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"15", "2"})));
@@ -288,7 +349,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
         assertEquals("r", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/GetLastCharacter.rml"), new String[]{"lastcharacter"})));
         assertEquals("r", 
@@ -301,7 +363,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		Program program = builder.build(new FileReader("examples/GetLastCharacter.rml"), new String[]{""});
         String out = executor.evaluateProgram(program);
         assertEquals("", out);
@@ -313,7 +376,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
         assertEquals("lastcharacte", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/GetAllButLastCharacter.rml"), new String[]{"lastcharacter"})));
         assertEquals("", 
@@ -326,7 +390,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         assertEquals("000001", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/PadWithZeros.rml"), new String[]{"1", "123456"})));
@@ -350,7 +415,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         assertEquals("9", 
         		executor.evaluateProgram(builder.build("define naiveAdd: a, 0 = a; a, b = naiveAdd(inc(a), dec(b)).", 
@@ -363,9 +429,10 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
-        /*assertEquals("2", 
+        assertEquals("2", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1", "1"})));
         assertEquals("100", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"47", "53"})));
@@ -376,7 +443,7 @@ public class ExecutorTest {
         assertEquals("15299172044422", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"9999084587961", "5300087456461"})));
         assertEquals("-15299172044422", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"-9999084587961", "-5300087456461"})));*/
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"-9999084587961", "-5300087456461"})));
         assertEquals("2.2", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1.1", "1.1"})));
         assertEquals("2.11", 
@@ -391,7 +458,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         assertEquals("test", 
         		executor.evaluateProgram(builder.build("define func: a | {''}:a = a.", new String[]{"test"})));
@@ -412,7 +480,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         assertEquals("true", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/Equals.rml"), new String[]{"test", "test"})));
@@ -432,7 +501,8 @@ public class ExecutorTest {
 			, IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
-			, NotANumberException {
+			, NotANumberException
+			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
         assertEquals("false", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{"test"})));

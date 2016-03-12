@@ -5,12 +5,16 @@ import java.io.IOException;
 
 import exceptions.NoMatchingSignatureException;
 import exceptions.NotANumberException;
+import exceptions.UndeclaredVariableException;
 import exceptions.UndefinedVariableException;
 
 public class Caremelle {
 	
-	public static void main(String [] args) 
-			throws UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+	public static void main(String [] args) throws 
+			UndefinedVariableException, 
+			NoMatchingSignatureException, 
+			NotANumberException, 
+			UndeclaredVariableException {
 		
 		if (args.length == 0) {
 			System.out.println("To run an Aremelle program, supply the path to "

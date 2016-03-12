@@ -1,8 +1,12 @@
 grammar Aremelle;
 
 program
-    :   function?
+    :   import* function?
     ;
+		
+import
+		:		IMPORT String DOT
+		;
   
 function
     :   DEFINE Identifier COLON functionBody DOT
@@ -107,6 +111,10 @@ DOT
 EQUAL
     :   '='
     ;
+		
+IMPORT
+		:		'import'
+		;
     
 fragment LETTER
     :   ('a'..'z' | 'A'..'Z')

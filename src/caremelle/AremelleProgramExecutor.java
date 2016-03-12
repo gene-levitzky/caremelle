@@ -14,15 +14,21 @@ import aremelle.Program;
 import aremelle.RewriteRule;
 import exceptions.NoMatchingSignatureException;
 import exceptions.NotANumberException;
+import exceptions.UndeclaredVariableException;
 import exceptions.UndefinedVariableException;
 
 public class AremelleProgramExecutor {
 
 	public String evaluateProgram(Program program) 
-			throws UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+			throws UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException {
 
-		ExecutionContext programContext = 
-				new ExecutionContext(program.getBaseFunction(), program.getFunction(), program.getFunctionCall());
+		ExecutionContext programContext = new ExecutionContext(
+				program.getBaseFunction(), 
+				program.getFunction(), 
+				program.getFunctionCall());
 		Stack<ExecutionContext> contextStack = new Stack<ExecutionContext>();
 		contextStack.push(programContext);
 
@@ -34,9 +40,11 @@ public class AremelleProgramExecutor {
 			if (context.isDone()) {
 				// this expression has been fully evaluated
 
-				ExecutionContext previousContext = contextStack.isEmpty() ? null : contextStack.pop();
+				ExecutionContext previousContext = contextStack.isEmpty() ? 
+						null : contextStack.pop();
 
-				if (context.getMode() == ExecutionMode.ExpressionMode && previousContext == null) {
+				if (context.getMode() == ExecutionMode.ExpressionMode 
+						&& previousContext == null) {
 					// this was the initial function call and we finished evaluating it;
 					// just return to what it evaluated, and we're done!
 					return result.toString();
@@ -44,9 +52,12 @@ public class AremelleProgramExecutor {
 
 				switch (previousContext.getMode()) {
 				case FunctionCallMode:
-					// this result is an argument to a function call
-					previousContext.setCalledFunctionArgument(previousContext.getCalledFunctionArgumentIndex(), result);
-					previousContext.setCalledFunctionArgumentIndex(previousContext.getCalledFunctionArgumentIndex() + 1);
+					// this result is an argument to a function calls
+					previousContext.setCalledFunctionArgument(
+							previousContext.getCalledFunctionArgumentIndex(), 
+							result);
+					previousContext.setCalledFunctionArgumentIndex(
+							previousContext.getCalledFunctionArgumentIndex() + 1);
 					break;
 				case ExpressionMode:
 					// this result is an evaluated atomic expression\
@@ -72,14 +83,20 @@ public class AremelleProgramExecutor {
 					Function newFunction = context.getCalledFunction();
 					Expression expression = newFunction.getExpression();
 					if (expression == null) {
-						RewriteRule statement = newFunction.getRuleWithMatchingPattern(context.getCalledFunctionArguments());
-						if (statement == null) {
-							throw new NoMatchingSignatureException(context.getCalledFunction().getName(), 
+						RewriteRule rule = 
+								newFunction.getRuleWithMatchingPattern(
+										context.getCalledFunctionArguments());
+						if (rule == null) {
+							throw new NoMatchingSignatureException(
+									context.getCalledFunction().getName(), 
 									context.getCalledFunctionArguments());
 						}
-						expression = statement.getExpression();
+						expression = rule.getExpression();
 					}
-					ExecutionContext newContext = new ExecutionContext(newFunction, expression, context.getCalledFunctionArguments());
+					ExecutionContext newContext = new ExecutionContext(
+							newFunction, 
+							expression, 
+							context.getCalledFunctionArguments());
 					contextStack.push(newContext);
 					continue main;
 				}
@@ -128,7 +145,7 @@ public class AremelleProgramExecutor {
 							}
 						}
 						else {
-							throw new UndefinedVariableException(identifier.getName());
+							throw new UndeclaredVariableException(identifier.getName());
 						}
 					}
 				}
