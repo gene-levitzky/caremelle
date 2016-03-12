@@ -124,8 +124,7 @@ public class AremelleProgramExecutor {
 								continue main;
 							}
 							else {
-								System.err.println("Something went terribly wrong.");
-								System.exit(-1);
+								throw new UndefinedVariableException(identifier.getName());
 							}
 						}
 						else {

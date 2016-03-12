@@ -1,4 +1,5 @@
 define palindrome:
 	'.' | '' | {'.'}:a {'.'}:a = 'true';
 	{'.'}:a {'.'}:b = 'false';
-	{'.'}:a middle {'.'}:a = palindrome(middle).
+	{'.'}:a middle {'.'}:a = palindrome(middle);
+	notAPalndrome = 'false'.

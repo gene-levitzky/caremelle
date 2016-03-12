@@ -446,5 +446,7 @@ public class ExecutorTest {
         		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{"aa"})));
         assertEquals("true", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{""})));
+        assertEquals("false", 
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{"abcd"})));
 	}
 }

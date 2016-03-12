@@ -42,10 +42,6 @@ public class Pattern extends ListWrapper<Parameter>{
 		int group = 1;
 		for (int i = 0; i < size(); i++) {
 			String match = matcher.group(group);
-			if (get(i).getValue() != null) {
-				System.err.println("Something went wrong.");
-				//System.exit(-1);
-			}
 			get(i).setValue(match);
 			group++;
 			group += get(i).getNumberOfCaptureGroups();
