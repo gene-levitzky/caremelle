@@ -39,6 +39,15 @@ public class ExecutorTest {
 	}
 	
 	@Test
+	public void testDollarParam() 
+			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+		builder = new AremelleProgramBuilder();
+        Program program = builder.build("define echo: $empty = 'it works!'.", new String[]{""});
+        String out = executor.evaluateProgram(program);
+        assertEquals("it works!", out);
+	}
+	
+	@Test
 	public void testCallNestedFunctionDoubleHelper() 
 			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
 		builder = new AremelleProgramBuilder();
@@ -153,7 +162,7 @@ public class ExecutorTest {
 			, NoMatchingSignatureException
 			, NotANumberException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build(new FileReader("Program0.rml"), new String[]{"200000", "10000"});
+        Program program = builder.build(new FileReader("examples/Program0.rml"), new String[]{"200000", "10000"});
         String out = executor.evaluateProgram(program);
         assertEquals("210000", out);
 	}
@@ -166,7 +175,7 @@ public class ExecutorTest {
 			, NoMatchingSignatureException
 			, NotANumberException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build(new FileReader("Program1.rml"), new String[]{"100000", "2"});
+        Program program = builder.build(new FileReader("examples/Program1.rml"), new String[]{"100000", "2"});
         String out = executor.evaluateProgram(program);
         assertEquals("200000", out);
 	}
@@ -179,7 +188,7 @@ public class ExecutorTest {
 			, NoMatchingSignatureException
 			, NotANumberException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build(new FileReader("Program2.rml"), new String[]{"100000", "2"});
+        Program program = builder.build(new FileReader("examples/Program2.rml"), new String[]{"100000", "2"});
         String out = executor.evaluateProgram(program);
         assertEquals("200000", out);
 	}
@@ -193,21 +202,21 @@ public class ExecutorTest {
 			, NotANumberException {
 		builder = new AremelleProgramBuilder();
         assertEquals("c52", 
-        		executor.evaluateProgram(builder.build(new FileReader("AppendDigitWithCarry.rml"), new String[]{"15", "2"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"15", "2"})));
         assertEquals("60", 
-        		executor.evaluateProgram(builder.build(new FileReader("AppendDigitWithCarry.rml"), new String[]{"5", "c0"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"5", "c0"})));
         assertEquals("c01", 
-        		executor.evaluateProgram(builder.build(new FileReader("AppendDigitWithCarry.rml"), new String[]{"9", "c1"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"9", "c1"})));
         assertEquals("45", 
-        		executor.evaluateProgram(builder.build(new FileReader("AppendDigitWithCarry.rml"), new String[]{"4", "5"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"4", "5"})));
         assertEquals("c55", 
-        		executor.evaluateProgram(builder.build(new FileReader("AppendDigitWithCarry.rml"), new String[]{"14", "c5"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"14", "c5"})));
         assertEquals("55", 
-        		executor.evaluateProgram(builder.build(new FileReader("AppendDigitWithCarry.rml"), new String[]{"4", "c5"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"4", "c5"})));
         assertEquals("9", 
-        		executor.evaluateProgram(builder.build(new FileReader("AppendDigitWithCarry.rml"), new String[]{"9", ""})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"9", ""})));
         assertEquals("20", 
-        		executor.evaluateProgram(builder.build(new FileReader("AppendDigitWithCarry.rml"), new String[]{"1", "c0"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"1", "c0"})));
 	}
 	
 	@Test
@@ -218,9 +227,9 @@ public class ExecutorTest {
 			, NoMatchingSignatureException
 			, NotANumberException {
         assertEquals("r", 
-        		executor.evaluateProgram(builder.build(new FileReader("GetLastCharacter.rml"), new String[]{"lastcharacter"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/GetLastCharacter.rml"), new String[]{"lastcharacter"})));
         assertEquals("r", 
-        		executor.evaluateProgram(builder.build(new FileReader("GetLastCharacter.rml"), new String[]{"r"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/GetLastCharacter.rml"), new String[]{"r"})));
 	}
 	
 	@Test(expected = NoMatchingSignatureException.class)
@@ -230,7 +239,7 @@ public class ExecutorTest {
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException {
-		Program program = builder.build(new FileReader("GetLastCharacter.rml"), new String[]{""});
+		Program program = builder.build(new FileReader("examples/GetLastCharacter.rml"), new String[]{""});
         String out = executor.evaluateProgram(program);
         assertEquals("", out);
 	}
@@ -243,9 +252,9 @@ public class ExecutorTest {
 			, NoMatchingSignatureException
 			, NotANumberException {
         assertEquals("lastcharacte", 
-        		executor.evaluateProgram(builder.build(new FileReader("GetAllButLastCharacter.rml"), new String[]{"lastcharacter"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/GetAllButLastCharacter.rml"), new String[]{"lastcharacter"})));
         assertEquals("", 
-        		executor.evaluateProgram(builder.build(new FileReader("GetAllButLastCharacter.rml"), new String[]{"r"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/GetAllButLastCharacter.rml"), new String[]{"r"})));
 	}
 	
 	@Test
@@ -257,19 +266,19 @@ public class ExecutorTest {
 			, NotANumberException {
 		builder = new AremelleProgramBuilder();
         assertEquals("000001", 
-        		executor.evaluateProgram(builder.build(new FileReader("PadWithZeros.rml"), new String[]{"1", "123456"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/PadWithZeros.rml"), new String[]{"1", "123456"})));
         assertEquals("01", 
-        		executor.evaluateProgram(builder.build(new FileReader("PadWithZeros.rml"), new String[]{"1", "19"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/PadWithZeros.rml"), new String[]{"1", "19"})));
         assertEquals("19", 
-        		executor.evaluateProgram(builder.build(new FileReader("PadWithZeros.rml"), new String[]{"19", "1"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/PadWithZeros.rml"), new String[]{"19", "1"})));
         assertEquals("123", 
-        		executor.evaluateProgram(builder.build(new FileReader("PadWithZeros.rml"), new String[]{"123", "123"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/PadWithZeros.rml"), new String[]{"123", "123"})));
         assertEquals("123456", 
-        		executor.evaluateProgram(builder.build(new FileReader("PadWithZeros.rml"), new String[]{"123456", "12345"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/PadWithZeros.rml"), new String[]{"123456", "12345"})));
         assertEquals("4", 
-        		executor.evaluateProgram(builder.build(new FileReader("PadWithZeros.rml"), new String[]{"4", "5"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/PadWithZeros.rml"), new String[]{"4", "5"})));
         assertEquals("5", 
-        		executor.evaluateProgram(builder.build(new FileReader("PadWithZeros.rml"), new String[]{"5", "4"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/PadWithZeros.rml"), new String[]{"5", "4"})));
 	}
 	
 	@Test
@@ -294,17 +303,17 @@ public class ExecutorTest {
 			, NotANumberException {
 		builder = new AremelleProgramBuilder();
         assertEquals("2", 
-        		executor.evaluateProgram(builder.build(new FileReader("Add.rml"), new String[]{"1", "1"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1", "1"})));
         assertEquals("100", 
-        		executor.evaluateProgram(builder.build(new FileReader("Add.rml"), new String[]{"47", "53"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"47", "53"})));
         assertEquals("10", 
-                		executor.evaluateProgram(builder.build(new FileReader("Add.rml"), new String[]{"1", "9"})));
+                		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1", "9"})));
         assertEquals("20", 
-        		executor.evaluateProgram(builder.build(new FileReader("Add.rml"), new String[]{"1", "19"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1", "19"})));
         assertEquals("15299172044422", 
-        		executor.evaluateProgram(builder.build(new FileReader("Add.rml"), new String[]{"9999084587961", "5300087456461"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"9999084587961", "5300087456461"})));
         assertEquals("-15299172044422", 
-        		executor.evaluateProgram(builder.build(new FileReader("Add.rml"), new String[]{"-9999084587961", "-5300087456461"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"-9999084587961", "-5300087456461"})));
 	}
 	
 	@Test
@@ -337,15 +346,15 @@ public class ExecutorTest {
 			, NotANumberException {
 		builder = new AremelleProgramBuilder();
         assertEquals("true", 
-        		executor.evaluateProgram(builder.build(new FileReader("Equals.rml"), new String[]{"test", "test"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Equals.rml"), new String[]{"test", "test"})));
         assertEquals("false", 
-        		executor.evaluateProgram(builder.build(new FileReader("Equals.rml"), new String[]{"test", "ssd"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Equals.rml"), new String[]{"test", "ssd"})));
         assertEquals("false", 
-        		executor.evaluateProgram(builder.build(new FileReader("Equals.rml"), new String[]{"", "test"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Equals.rml"), new String[]{"", "test"})));
         assertEquals("false", 
-        		executor.evaluateProgram(builder.build(new FileReader("Equals.rml"), new String[]{"test", ""})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Equals.rml"), new String[]{"test", ""})));
         assertEquals("true", 
-        		executor.evaluateProgram(builder.build(new FileReader("Equals.rml"), new String[]{"", ""})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Equals.rml"), new String[]{"", ""})));
 	}
 	
 	@Test
@@ -357,16 +366,16 @@ public class ExecutorTest {
 			, NotANumberException {
 		builder = new AremelleProgramBuilder();
         assertEquals("false", 
-        		executor.evaluateProgram(builder.build(new FileReader("Palindrome.rml"), new String[]{"test"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{"test"})));
         assertEquals("true", 
-        		executor.evaluateProgram(builder.build(new FileReader("Palindrome.rml"), new String[]{"otto"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{"otto"})));
         assertEquals("true", 
-        		executor.evaluateProgram(builder.build(new FileReader("Palindrome.rml"), new String[]{"madamimadam"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{"madamimadam"})));
         assertEquals("false", 
-        		executor.evaluateProgram(builder.build(new FileReader("Palindrome.rml"), new String[]{"ta"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{"ta"})));
         assertEquals("true", 
-        		executor.evaluateProgram(builder.build(new FileReader("Palindrome.rml"), new String[]{"aa"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{"aa"})));
         assertEquals("true", 
-        		executor.evaluateProgram(builder.build(new FileReader("Palindrome.rml"), new String[]{""})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{""})));
 	}
 }

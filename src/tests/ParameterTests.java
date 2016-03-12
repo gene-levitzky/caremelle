@@ -13,25 +13,25 @@ public class ParameterTests {
 	
 	@Test
 	public void testParameter() {
-		aremelle.AtomicParameter atom = new aremelle.AtomicParameter("name");
-		aremelle.Parameter param = new aremelle.Parameter(atom);
+		aremelle.Parameter atom = new aremelle.Parameter("name");
+		aremelle.Pattern param = new aremelle.Pattern(atom);
 		assertTrue(param.fitArgument(any));
 	}
 
 	@Test
 	public void testParameterAtomicParameterValue() {
-		aremelle.AtomicParameter atom = new aremelle.AtomicParameter("name");
-		aremelle.Parameter param = new aremelle.Parameter(atom);
+		aremelle.Parameter atom = new aremelle.Parameter("name");
+		aremelle.Pattern param = new aremelle.Pattern(atom);
 		param.fitArgument(any);
 		assertEquals(any, atom.getValue());
 	}
 	
 	@Test
 	public void testParameter1() {
-		aremelle.Parameter param = new aremelle.Parameter(
-				new aremelle.AtomicParameter(null, "A|B"),
-				new aremelle.AtomicParameter("name"),
-				new aremelle.AtomicParameter(null, "C*"));
+		aremelle.Pattern param = new aremelle.Pattern(
+				new aremelle.Parameter(null, "A|B"),
+				new aremelle.Parameter("name"),
+				new aremelle.Parameter(null, "C*"));
 		Argument testString = new Argument("AbunchofStuffCCCCCCCC");
 		assertTrue(param.fitArgument(testString));
 	}
@@ -39,10 +39,10 @@ public class ParameterTests {
 	@Test
 	public void testParameterAtomicParameterValue1() {
 
-		aremelle.AtomicParameter a1 = new aremelle.AtomicParameter(null, "A|B");
-		aremelle.AtomicParameter a2 = new aremelle.AtomicParameter("name");
-		aremelle.AtomicParameter a3 = new aremelle.AtomicParameter(null, "C+");
-		aremelle.Parameter param = new aremelle.Parameter(a1, a2, a3);
+		aremelle.Parameter a1 = new aremelle.Parameter(null, "A|B");
+		aremelle.Parameter a2 = new aremelle.Parameter("name");
+		aremelle.Parameter a3 = new aremelle.Parameter(null, "C+");
+		aremelle.Pattern param = new aremelle.Pattern(a1, a2, a3);
 		Argument testString = new Argument("AbunchofStuffCCCCCCCC");
 		param.fitArgument(testString);
 		assertEquals(a1.getValue(), "A");
@@ -53,11 +53,11 @@ public class ParameterTests {
 	@Test
 	public void testParameterAtomicParameterValue2() {
 
-		aremelle.AtomicParameter a1 = new aremelle.AtomicParameter(null, "A|B");
-		aremelle.AtomicParameter a2 = new aremelle.AtomicParameter("name");
-		aremelle.AtomicParameter a3 = new aremelle.AtomicParameter(null, "C+");
-		aremelle.AtomicParameter a4 = new aremelle.AtomicParameter("name1");
-		aremelle.Parameter param = new aremelle.Parameter(a1, a2, a3, a4);
+		aremelle.Parameter a1 = new aremelle.Parameter(null, "A|B");
+		aremelle.Parameter a2 = new aremelle.Parameter("name");
+		aremelle.Parameter a3 = new aremelle.Parameter(null, "C+");
+		aremelle.Parameter a4 = new aremelle.Parameter("name1");
+		aremelle.Pattern param = new aremelle.Pattern(a1, a2, a3, a4);
 		Argument testString = new Argument("AbunchofStuffCCCCCCCC");
 		param.fitArgument(testString);
 		assertEquals(a1.getValue(), "A");
@@ -69,10 +69,10 @@ public class ParameterTests {
 	@Test
 	public void testParameterAtomicParameterValue3() {
 
-		aremelle.AtomicParameter a1 = new aremelle.AtomicParameter("name");
-		aremelle.AtomicParameter a2 = new aremelle.AtomicParameter(null, "toReplace");
-		aremelle.AtomicParameter a3 = new aremelle.AtomicParameter("name1");
-		aremelle.Parameter param = new aremelle.Parameter(a1, a2, a3);
+		aremelle.Parameter a1 = new aremelle.Parameter("name");
+		aremelle.Parameter a2 = new aremelle.Parameter(null, "toReplace");
+		aremelle.Parameter a3 = new aremelle.Parameter("name1");
+		aremelle.Pattern param = new aremelle.Pattern(a1, a2, a3);
 		Argument testString = new Argument("bunchofrandomnonesense1-toReplace-anotherbunchofRandomNoise");
 		param.fitArgument(testString);
 		assertEquals(a1.getValue(), "bunchofrandomnonesense1-");
@@ -83,10 +83,10 @@ public class ParameterTests {
 	@Test
 	public void testParameterAtomicParameterValueNestedGroups() {
 
-		aremelle.AtomicParameter a1 = new aremelle.AtomicParameter(null, "((A)|B)");
-		aremelle.AtomicParameter a2 = new aremelle.AtomicParameter("name");
-		aremelle.AtomicParameter a3 = new aremelle.AtomicParameter(null, "(C+)");
-		aremelle.Parameter param = new aremelle.Parameter(a1, a2, a3);
+		aremelle.Parameter a1 = new aremelle.Parameter(null, "((A)|B)");
+		aremelle.Parameter a2 = new aremelle.Parameter("name");
+		aremelle.Parameter a3 = new aremelle.Parameter(null, "(C+)");
+		aremelle.Pattern param = new aremelle.Pattern(a1, a2, a3);
 		Argument testString = new Argument("AbunchofStuffCCCCCCCC");
 		param.fitArgument(testString);
 		assertEquals(a1.getValue(), "A");

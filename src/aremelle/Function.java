@@ -8,10 +8,10 @@ import exceptions.UndefinedVariableException;
 public class Function extends NamedEntity {
 
 	private final Expression expression;
-	private final Statement[] statements;
+	private final RewriteRule[] rewriteRules;
 	private final Scope scope;
 
-	public Function(String name, Function[] functions, Expression expression, Statement[] statements) {
+	public Function(String name, Function[] functions, Expression expression, RewriteRule[] rewriteRules) {
 		super(name);
 		
 		scope = new Scope();
@@ -24,7 +24,7 @@ public class Function extends NamedEntity {
 		}
 
 		this.expression = expression;
-		this.statements = statements;
+		this.rewriteRules = rewriteRules;
 	}
 	
 	public void setParentScope(Scope parent) {
@@ -47,11 +47,11 @@ public class Function extends NamedEntity {
 
 		// Otherwise, we need to find a statement with a matching signature
 		// and return its evaluated expression(s)		
-		Parameters matchingParameters = null;
-		for (Statement statement : statements) {			
-			if ((matchingParameters = statement.getMatchingParameters(args, scope)) != null) {
-				scope.addParameters(matchingParameters);
-				return statement.evaluate(scope);
+		Signature matchingSignature = null;
+		for (RewriteRule rule : rewriteRules) {			
+			if ((matchingSignature = rule.getMatchingSignature(args, scope)) != null) {
+				scope.addSignature(matchingSignature);
+				return rule.evaluate(scope);
 			}
 		}
 
@@ -62,14 +62,14 @@ public class Function extends NamedEntity {
 		return scope;
 	}
 
-	public Statement getStatementWithMatchingParameters(Argument[] args) throws NotANumberException {
+	public RewriteRule getRuleWithMatchingPattern(Argument[] args) throws NotANumberException {
 		// Otherwise, we need to find a statement with a matching signature
 		// and return its evaluated expression(s)		
-		Parameters matchingParameters = null;
-		for (Statement statement : statements) {			
-			if ((matchingParameters = statement.getMatchingParameters(args, scope)) != null) {
-				scope.addParameters(matchingParameters);
-				return statement;
+		Signature matchingSignature = null;
+		for (RewriteRule rule : rewriteRules) {			
+			if ((matchingSignature = rule.getMatchingSignature(args, scope)) != null) {
+				scope.addSignature(matchingSignature);
+				return rule;
 			}
 		}
 
@@ -96,7 +96,7 @@ public class Function extends NamedEntity {
 	public static final Function INC = new Function("inc", null, null, null) {
 		
 		@Override
-		public Statement getStatementWithMatchingParameters(Argument[] args) throws NotANumberException {
+		public RewriteRule getRuleWithMatchingPattern(Argument[] args) throws NotANumberException {
 			String result = null;
 			if (args.length == 1) {
 				try {
@@ -111,9 +111,9 @@ public class Function extends NamedEntity {
 					}
 				}	
 			}
-			Parameters params = new Parameters(new Parameter(new AtomicParameter("num")));
+			Signature params = new Signature(new Pattern(new Parameter("num")));
 			Expression expression = new Expression(new AtomicExpressionLiteral(result));
-			return new Statement(new Parameters[]{params}, expression);
+			return new RewriteRule(new Signature[]{params}, expression);
 		}
 
 		@Override
@@ -139,7 +139,7 @@ public class Function extends NamedEntity {
 	public static final Function DEC = new Function("dec", null, null, null) {
 		
 		@Override
-		public Statement getStatementWithMatchingParameters(Argument[] args) throws NotANumberException {
+		public RewriteRule getRuleWithMatchingPattern(Argument[] args) throws NotANumberException {
 			String result = null;
 			if (args.length == 1) {
 				try {
@@ -154,9 +154,9 @@ public class Function extends NamedEntity {
 					}
 				}	
 			}
-			Parameters params = new Parameters(new Parameter(new AtomicParameter("num")));
+			Signature params = new Signature(new Pattern(new Parameter("num")));
 			Expression expression = new Expression(new AtomicExpressionLiteral(result));
-			return new Statement(new Parameters[]{params}, expression);
+			return new RewriteRule(new Signature[]{params}, expression);
 		}
 
 		@Override
@@ -182,11 +182,11 @@ public class Function extends NamedEntity {
 	public static final Function OUT = new Function("out", null, null, null) {
 		
 		@Override
-		public Statement getStatementWithMatchingParameters(Argument[] args) throws NotANumberException {
+		public RewriteRule getRuleWithMatchingPattern(Argument[] args) throws NotANumberException {
 			if (args.length != 0 && args.length != 1) {
 				return null;
 			}
-			Parameters params = new Parameters(new Parameter(new AtomicParameter("output")));
+			Signature params = new Signature(new Pattern(new Parameter("output")));
 			Expression expression = new Expression(new AtomicExpressionLiteral(""){
 				@Override
 				public String getValue() {
@@ -199,7 +199,7 @@ public class Function extends NamedEntity {
 					return "";
 				}
 			});
-			return new Statement(new Parameters[]{params}, expression);
+			return new RewriteRule(new Signature[]{params}, expression);
 		}
 
 		@Override
@@ -222,18 +222,18 @@ public class Function extends NamedEntity {
 	public static final Function IN = new Function("in", null, null, null) {
 		
 		@Override
-		public Statement getStatementWithMatchingParameters(Argument[] args) throws NotANumberException {
+		public RewriteRule getRuleWithMatchingPattern(Argument[] args) throws NotANumberException {
 			if (args.length != 0) {
 				return null;
 			}
-			Parameters params = new Parameters(new Parameter());
+			Signature params = new Signature(new Pattern());
 			Expression expression = new Expression(new AtomicExpressionLiteral(""){
 				@Override
 				public String getValue() {
 					return Resources.getIn().nextLine();
 				}
 			});
-			return new Statement(new Parameters[]{params}, expression);
+			return new RewriteRule(new Signature[]{params}, expression);
 		}
 
 		@Override

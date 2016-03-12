@@ -10,7 +10,7 @@ import aremelle.AtomicExpressionLiteral;
 import aremelle.Expression;
 import aremelle.Function;
 import aremelle.Program;
-import aremelle.Statement;
+import aremelle.RewriteRule;
 import exceptions.NoMatchingSignatureException;
 import exceptions.NotANumberException;
 import exceptions.UndefinedVariableException;
@@ -71,7 +71,7 @@ public class AremelleProgramExecutor {
 					Function newFunction = context.getCalledFunction();
 					Expression expression = newFunction.getExpression();
 					if (expression == null) {
-						Statement statement = newFunction.getStatementWithMatchingParameters(context.getCalledFunctionArguments());
+						RewriteRule statement = newFunction.getRuleWithMatchingPattern(context.getCalledFunctionArguments());
 						if (statement == null) {
 							throw new NoMatchingSignatureException(context.getCalledFunction().getName(), 
 									context.getCalledFunctionArguments());

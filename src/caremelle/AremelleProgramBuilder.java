@@ -11,25 +11,25 @@ import antlr.AremelleLexer;
 import antlr.AremelleParser;
 import antlr.AremelleParser.ArgumentsContext;
 import antlr.AremelleParser.AtomicExpressionContext;
-import antlr.AremelleParser.AtomicParameterContext;
 import antlr.AremelleParser.ExpressionContext;
 import antlr.AremelleParser.FunctionBodyContext;
 import antlr.AremelleParser.FunctionContext;
 import antlr.AremelleParser.ParameterContext;
-import antlr.AremelleParser.ParametersContext;
+import antlr.AremelleParser.PatternContext;
 import antlr.AremelleParser.ProgramContext;
-import antlr.AremelleParser.StatementContext;
+import antlr.AremelleParser.RewriteRuleContext;
+import antlr.AremelleParser.SignatureContext;
 import aremelle.AtomicExpression;
 import aremelle.AtomicExpressionFunctionCall;
 import aremelle.AtomicExpressionIdentifier;
 import aremelle.AtomicExpressionLiteral;
-import aremelle.AtomicParameter;
+import aremelle.Parameter;
 import aremelle.Expression;
 import aremelle.Function;
-import aremelle.Parameter;
-import aremelle.Parameters;
+import aremelle.Pattern;
+import aremelle.Signature;
 import aremelle.Program;
-import aremelle.Statement;
+import aremelle.RewriteRule;
 
 public class AremelleProgramBuilder {
 	
@@ -60,34 +60,37 @@ public class AremelleProgramBuilder {
     	for (int i = 0; i < nestedFunctions.length; i++) {
     		nestedFunctions[i] = constructFunction(fbc.function(i));
     	}
-    	int numStatements = fbc.statements() == null ? 0 : fbc.statements().statement().size();
-    	Statement[] statements = new Statement[numStatements];
-    	for (int i = 0; i < statements.length; i++) {
-    		statements[i] = constructStatement(fbc.statements().statement(i));
+    	int numRules = fbc.rewriteRules() == null ? 0 : fbc.rewriteRules().rewriteRule().size();
+    	RewriteRule[] rules = new RewriteRule[numRules];
+    	for (int i = 0; i < rules.length; i++) {
+    		rules[i] = constructRewriteRule(fbc.rewriteRules().rewriteRule(i));
     	}
     	Expression expression = fbc.expression() != null ? constructExpression(fbc.expression()) : null;
-    	return new Function(functionContext.Identifier().getText(), nestedFunctions, expression, statements);
+    	return new Function(functionContext.Identifier().getText(), nestedFunctions, expression, rules);
     }
     
-    private Statement constructStatement(StatementContext sc) {
+    private RewriteRule constructRewriteRule(RewriteRuleContext sc) {
 		Expression expression = constructExpression(sc.expression());
-		Parameters[] parametersList = new Parameters[sc.parametersList().parameters().size()];
-		for (int i = 0; i < parametersList.length; i++) {
-			ParametersContext psc = sc.parametersList().parameters(i);
-			Parameter[] parameters = new Parameter[psc.parameter().size()];
-			for (int j = 0; j < parameters.length; j++) {
-				parameters[j] = constructParameter(psc.parameter(j));
+		Signature[] signatures = new Signature[sc.signatures().signature().size()];
+		for (int i = 0; i < signatures.length; i++) {
+			SignatureContext psc = sc.signatures().signature(i);
+			Pattern[] patterns = new Pattern[psc.pattern().size()];
+			for (int j = 0; j < patterns.length; j++) {
+				patterns[j] = constructPattern(psc.pattern(j));
 			}
-			parametersList[i] = new Parameters(parameters);
+			signatures[i] = new Signature(patterns);
 		}
-    	return new Statement(parametersList, expression);
+    	return new RewriteRule(signatures, expression);
 	}
     
-    private Parameter constructParameter(ParameterContext pc) {
-    	AtomicParameter[] atoms = new AtomicParameter[pc.atomicParameter().size()];
-    	for (int i = 0; i < atoms.length; i++) {
-    		AtomicParameterContext apc = pc.atomicParameter(i);
-    		String name = apc.Identifier() == null ? null : apc.Identifier().getText();
+    private Pattern constructPattern(PatternContext pc) {
+    	Parameter[] parameters = new Parameter[pc.parameter().size()];
+    	for (int i = 0; i < parameters.length; i++) {
+    		ParameterContext apc = pc.parameter(i);
+    		String name = apc.IdentifierParameter() == null ? 
+    				null : apc.IdentifierParameter().getText();
+    		name = name != null ? name :
+    				apc.Identifier() != null ? apc.Identifier().getText() : null; 
     		String regexp = null;
     		if (apc.regexp() != null) {
 	    		regexp = apc.regexp().atomicRegexp().getText();
@@ -105,11 +108,12 @@ public class AremelleProgramBuilder {
 	    				}
 	    			}
 	    		}
-	    		name = apc.regexp().Identifier() == null ? name : apc.regexp().Identifier().getText();
+	    		name = apc.regexp().Identifier() == null ? 
+	    				name : apc.regexp().Identifier().getText();
     		}
-    		atoms[i] = new AtomicParameter(name, regexp);
+    		parameters[i] = new Parameter(name, regexp);
     	}
-    	return new Parameter(atoms);
+    	return new Pattern(parameters);
     }
 
 	private Expression constructExpression(ExpressionContext expressionContext) {

@@ -1,66 +1,82 @@
 package aremelle;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import share.NamedEntity;
 
-import share.ListWrapper;
-
-public class Parameter extends ListWrapper<AtomicParameter>{
+public class Parameter extends NamedEntity {
 	
-	public Parameter(AtomicParameter ... atoms) {
-		super(atoms);
+	private String regexp;
+	private String value;
+	
+	private int numberOfCaptureGroups;
+	
+	private final static String nonEmptyRegexp = ".+?";
+	private final static String anyRegexp = ".*?";
+	
+	private Parameter reference;
+
+	public Parameter(String name) {
+		super(name);
+		setRegexp(name != null && name.charAt(0) == '$' ? anyRegexp : nonEmptyRegexp);
+	}
+	
+	public Parameter(String name, String regexp) {
+		super(name);
+		setRegexp(regexp == null ? 
+				(name != null && name.charAt(0) == '$' ? anyRegexp : nonEmptyRegexp) : regexp);
+	}
+	
+	public String getRegexp() {
+		return regexp;
+	}
+	
+	public void setRegexp(String regexp) {
+		boolean inQuotes = false;
+		int numberOfCaptureGroups = 0;
+		for (int i = 0; i < regexp.length(); i++) {
+			char c = regexp.charAt(i);
+			if (c == '\'') {
+				inQuotes = !inQuotes;
+				continue;
+			}
+			if (!inQuotes && c == '(') {
+				numberOfCaptureGroups++;
+			}
+		}
+		this.numberOfCaptureGroups = numberOfCaptureGroups;
+		this.regexp = '(' + regexp + ')';
 	}
 
-	public boolean fitArgument(Argument argument) {
-		
-		if (argument.isFunction()) {
-			if (size() != 1) {
-				return false;
-			}
-			if (get(0).isLiteral()) {
-				return false;
-			}
-			return true;
-		}
-		
-		StringBuffer regexpBuffer = new StringBuffer("^");
-		int totalNumberOfCapturingGroups = 0;
-		for (AtomicParameter atom : this) {
-			regexpBuffer.append(atom.getRegexp());
-			totalNumberOfCapturingGroups++;
-			totalNumberOfCapturingGroups += atom.getNumberOfCaptureGroups();
-		}
-		regexpBuffer.append("$");
-		
-		Matcher matcher = Pattern.compile(regexpBuffer.toString()).matcher(argument.toString());
-		if (!matcher.find() || matcher.groupCount() != totalNumberOfCapturingGroups) {
-			for (AtomicParameter atom : this) {
-				atom.setValue(null);
-			}
-			return false;
-		}
-		int group = 1;
-		for (int i = 0; i < size(); i++) {
-			String match = matcher.group(group);
-			get(i).setValue(match);
-			group++;
-			group += get(i).getNumberOfCaptureGroups();
-		}
-		
-		// check to make sure that back-references match
-		for (AtomicParameter atom : this) {
-			if (atom.getReference() != null 
-					&& !atom.getReference().getValue().equals(atom.getValue())) {
-				return false;
-			}
-		}
-		
-		return true;
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public int getNumberOfCaptureGroups() {
+		return numberOfCaptureGroups;
 	}
 
 	public void resolve(Scope scope) {
-		for (AtomicParameter ap : this) {
-			ap.resolve(scope);
+		Parameter referencedParameter = null;
+		if (regexp.isEmpty() 
+				&& getName() != null 
+				&& (referencedParameter = scope.getAtomicParameter(getName())) != null) {
+			setRegexp(referencedParameter.getRegexp());
 		}
 	}
+
+	public boolean isLiteral() {
+		return this.regexp.equals(nonEmptyRegexp) && getName().isEmpty();
+	}
+
+	public void setReference(Parameter reference) {
+		this.reference = reference;		
+	}
+
+	public Parameter getReference() {
+		return this.reference;
+	}
+
 }

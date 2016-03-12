@@ -7,11 +7,11 @@ public class Scope {
 	
 	private Scope outerScope = null;
 	private Map<String, Function> functionNamespace;
-	private Map<String, AtomicParameter> atomicParameterNamespace;
+	private Map<String, Parameter> atomicParameterNamespace;
 	
 	public Scope() {
 		functionNamespace = new HashMap<String, Function>();
-		atomicParameterNamespace = new HashMap<String, AtomicParameter>();
+		atomicParameterNamespace = new HashMap<String, Parameter>();
 	}
 	
 	public Scope(Scope outerScope) {
@@ -44,8 +44,8 @@ public class Scope {
 		return functionNamespace.put(function.getName(), function) != null;
 	}
 	
-	public AtomicParameter getAtomicParameter(String name) {
-		AtomicParameter atomicParameter = atomicParameterNamespace.get(name);
+	public Parameter getAtomicParameter(String name) {
+		Parameter atomicParameter = atomicParameterNamespace.get(name);
 		if (atomicParameter == null && outerScope != null) {
 			atomicParameter = outerScope.getAtomicParameter(name);
 		}
@@ -57,13 +57,15 @@ public class Scope {
 	 * @param parameter
 	 * @return True if the parameter replaced an existing one, false otherwise.
 	 */
-	public boolean addAtomicParameter(AtomicParameter parameter) {
-		return atomicParameterNamespace.put(parameter.getName(), parameter) != null;
+	public boolean addAtomicParameter(Parameter parameter) {
+		String name = parameter.getName();
+		name = name.charAt(0) == '$' ? name.substring(1, name.length()) : name;
+		return atomicParameterNamespace.put(name, parameter) != null;
 	}
 	
-	public void addParameters(Parameters parameters) {
+	public void addSignature(Signature parameters) {
 		for (int i = 0; i < parameters.size(); i++) {
-			Parameter parameter = parameters.get(i);
+			Pattern parameter = parameters.get(i);
 			for (int j = 0; j < parameter.size(); j++) {
 				if (parameter.get(j).getName() != null) {
 					this.addAtomicParameter(parameter.get(j));

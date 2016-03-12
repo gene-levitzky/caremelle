@@ -4,23 +4,23 @@ import exceptions.NoMatchingSignatureException;
 import exceptions.NotANumberException;
 import exceptions.UndefinedVariableException;
 
-public class Statement {
+public class RewriteRule {
 	
 	// if a set of arguments matches any of our Parameters in parametersList
-	private Parameters[] parametersList;
+	private Signature[] signatures;
 	// then we evaluate these expressions and return the result
 	private Expression expression;
 	
-	public Statement(Parameters[] parametersList, Expression expression) {
-		this.parametersList = parametersList;
+	public RewriteRule(Signature[] signatures, Expression expression) {
+		this.signatures = signatures;
 		this.expression = expression;
 	}
 	
-	public Parameters getMatchingParameters(Argument[] args, Scope scope) {
-		for (Parameters parameters : parametersList) {
-			parameters.resolve(scope);
-			if (parameters.fitArguments(args)) {
-				return parameters;
+	public Signature getMatchingSignature(Argument[] args, Scope scope) {
+		for (Signature signature : signatures) {
+			signature.resolve(scope);
+			if (signature.fitArguments(args)) {
+				return signature;
 			}
 		}
 		return null;
