@@ -40,10 +40,10 @@ define add:
     define addDecimals:
         whole, 'c' part = clearCarry(
             appendDigitWithCarry(
-                clearCarry(whole), 'c\.' part
+                clearCarry(whole), 'c.' part
             )
         );
-        whole, part = clearCarry(whole) '\.' part;
+        whole, part = clearCarry(whole) '.' part;
         a, b, c, d = addDecimals(
             add(a, b), 
             add(padWithZeros(c, d), padWithZeros(d, c))
@@ -63,6 +63,6 @@ define add:
         )
     );
     '-'n, '-'m = '-'add(n, m);
-    whole '\.' part, m | m, whole '\.' part = add(whole, m) '\.' part;
     a '\.' b, c '\.' d = addDecimals(a, b, c, d);
+    whole '\.' part, m | m, whole '\.' part1 = add(whole, m) '.' part;
     n, m = add(n, m, '').

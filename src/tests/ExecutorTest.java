@@ -39,12 +39,48 @@ public class ExecutorTest {
 	}
 	
 	@Test
+	public void testMultiParameterPattern() 
+			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+		builder = new AremelleProgramBuilder();
+        Program program = builder.build(new FileReader("examples/MultiParameterPattern"), new String[]{"left,right", "other"});
+        String out = executor.evaluateProgram(program);
+        assertEquals("right", out);
+	}
+	
+	@Test
+	public void testOutterScope() 
+			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+		builder = new AremelleProgramBuilder();
+        Program program = builder.build(new FileReader("examples/Scope.rml"), new String[]{"test"});
+        String out = executor.evaluateProgram(program);
+        assertEquals("test", out);
+	}
+	
+	@Test
 	public void testDollarParam() 
 			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
 		builder = new AremelleProgramBuilder();
         Program program = builder.build("define echo: $empty = 'it works!'.", new String[]{""});
         String out = executor.evaluateProgram(program);
         assertEquals("it works!", out);
+	}
+	
+	@Test
+	public void testDollarParamSplit() 
+			throws FileNotFoundException, IOException, UndefinedVariableException, NoMatchingSignatureException, NotANumberException {
+		builder = new AremelleProgramBuilder();
+		
+        Program program = builder.build("define split: $left ',' $right = left.", new String[]{"left,right"});
+        String out = executor.evaluateProgram(program);
+        assertEquals("left", out);
+        
+        program = builder.build("define split: $left ',' $right = left.", new String[]{",right"});
+        out = executor.evaluateProgram(program);
+        assertEquals("", out);
+        
+        program = builder.build("define split: $left ',' $right = left.", new String[]{","});
+        out = executor.evaluateProgram(program);
+        assertEquals("", out);
 	}
 	
 	@Test
@@ -302,7 +338,7 @@ public class ExecutorTest {
 			, NoMatchingSignatureException
 			, NotANumberException {
 		builder = new AremelleProgramBuilder();
-        assertEquals("2", 
+        /*assertEquals("2", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1", "1"})));
         assertEquals("100", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"47", "53"})));
@@ -313,7 +349,13 @@ public class ExecutorTest {
         assertEquals("15299172044422", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"9999084587961", "5300087456461"})));
         assertEquals("-15299172044422", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"-9999084587961", "-5300087456461"})));
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"-9999084587961", "-5300087456461"})));*/
+        assertEquals("2.2", 
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1.1", "1.1"})));
+        assertEquals("2.11", 
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1.1", "1.01"})));
+        assertEquals("2.11", 
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1.01", "1.1"})));
 	}
 	
 	@Test

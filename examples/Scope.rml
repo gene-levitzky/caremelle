@@ -1,0 +1,6 @@
+define test:
+	define a:
+		define b:
+			var.
+		b().
+	var = a().

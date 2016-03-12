@@ -1,0 +1,2 @@
+define test:
+	a ',' b, c = out(a c) b.
