@@ -4,11 +4,18 @@ define padWithZeros:
 		string {'.'}:char = string.
 	define getLastCharacter:
 		{'.'}:char = char;
-		string {'.'}:char = char. 
-	define helper:
-		'', '', space = space;
-		a, '', space = a space;
-		'', b, space = helper('', getAllButLastCharacter(b), 0 space);
-		a, b, '' = helper(getAllButLastCharacter(a), getAllButLastCharacter(b), getLastCharacter(a));
-		a, b, space = helper(getAllButLastCharacter(a), getAllButLastCharacter(b), getLastCharacter(a) space).
-	n, m = helper(n, m, '').
+		string {'.'}:char = char.
+		
+    '', '', $result = result;
+    '', m, $result = padWithZeros(
+        '', 
+        getAllButLastCharacter(m), 
+        result 0
+    );
+    n, '', $result = n result;
+    n, m, $result = padWithZeros(
+        getAllButLastCharacter(n), 
+        getAllButLastCharacter(m), 
+        getLastCharacter(n) result
+    );
+    n, m = padWithZeros(n, m, '').

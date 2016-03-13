@@ -1,10 +1,10 @@
 grammar Aremelle;
 
 program
-    :   import* function?
+    :   importStatement* function?
     ;
 		
-import
+importStatement
 		:		IMPORT String DOT
 		;
   
@@ -71,6 +71,7 @@ regexp
 atomicRegexp
     :   String | Number
     ;
+		
     
 /*------------------------------------------------------------------
  *                             LEXER RULES
@@ -127,6 +128,10 @@ LEFT_BRACE
 LEFT_PAREN
     :   '('
     ;
+		
+PAREN
+		:		'"'
+		;
     
 RIGHT_BRACE
     :   '}'
@@ -145,8 +150,12 @@ SLASH
     ;
     
 SPACE
-    :    (' ' | '\t' | '\r' | '\n' | '\u000C')+ -> channel(HIDDEN)
+    :		(' ' | '\t' | '\r' | '\n' | '\u000C')+ -> channel(HIDDEN)
     ;
+		
+Comment
+		:		PAREN StringText PAREN -> channel(HIDDEN)
+		;
     
 fragment Complex
     :   Real '+' Real 'i'

@@ -27,6 +27,18 @@ public class AremelleBaseListener implements AremelleListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterImportStatement(AremelleParser.ImportStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitImportStatement(AremelleParser.ImportStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFunction(AremelleParser.FunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}

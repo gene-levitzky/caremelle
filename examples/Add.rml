@@ -33,6 +33,10 @@ define add:
         'c' space = '1' space;
         space = space.
         
+    define stripLeadingZeros:
+    	'0+' $n = '0' n;
+    	$n = n.
+        
     define naiveAdd:
         a, 0 = a;
         a, b = naiveAdd(inc(a), dec(b)).
@@ -45,12 +49,14 @@ define add:
         );
         whole, part = clearCarry(whole) '.' part;
         a, b, c, d = addDecimals(
-            add(a, b), 
-            add(padWithZeros(c, d), padWithZeros(d, c))
+            add(a, c, ''), 
+            add(padWithZeros(b, d), padWithZeros(d, b), '')
         ).
         
     '', '', space = clearCarry(space);
     '', n, space | n, '', space = appendDigitWithCarry(n, space);
+    
+    "main integer addition rule"
     n, m, $space = add(
         getAllButLastCharacter(n), 
         getAllButLastCharacter(m), 
@@ -62,7 +68,17 @@ define add:
             space
         )
     );
+    
+    "adding two negative numbers"
     '-'n, '-'m = '-'add(n, m);
-    a '\.' b, c '\.' d = addDecimals(a, b, c, d);
-    whole '\.' part, m | m, whole '\.' part = add(whole, m) '.' part;
-    n, m = add(n, m, '').
+    
+    "adding two decimals"
+    a '\.' b, c '\.' d = addDecimals(
+    	stripLeadingZeros(a), b, stripLeadingZeros(c), d);
+    
+    "adding a decimal to an integer"
+    whole '\.' part, m | m, whole '\.' part = add(
+    	stripLeadingZeros(whole), stripLeadingZeros(m)) '.' part;
+    
+    "entry point"
+    n, m = add(stripLeadingZeros(n), stripLeadingZeros(m), '').

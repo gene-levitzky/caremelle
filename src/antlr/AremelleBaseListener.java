@@ -1,5 +1,4 @@
 package antlr;
-
 // Generated from Aremelle.g4 by ANTLR 4.5.2
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -24,6 +23,18 @@ public class AremelleBaseListener implements AremelleListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitProgram(AremelleParser.ProgramContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterImportStatement(AremelleParser.ImportStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitImportStatement(AremelleParser.ImportStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

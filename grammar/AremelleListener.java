@@ -17,6 +17,16 @@ public interface AremelleListener extends ParseTreeListener {
 	 */
 	void exitProgram(AremelleParser.ProgramContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link AremelleParser#importStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterImportStatement(AremelleParser.ImportStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AremelleParser#importStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitImportStatement(AremelleParser.ImportStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link AremelleParser#function}.
 	 * @param ctx the parse tree
 	 */

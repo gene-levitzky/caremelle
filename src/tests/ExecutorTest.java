@@ -72,7 +72,7 @@ public class ExecutorTest {
         assertEquals("testing...remember?", out);
 	}
 	
-	@Test(expected=UndefinedVariableException.class)
+	@Test(expected=UndeclaredVariableException.class)
 	public void testShouldntPersist() 
 			throws FileNotFoundException
 			, IOException
@@ -393,9 +393,9 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
-        assertEquals("000001", 
+        assertEquals("100000", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/PadWithZeros.rml"), new String[]{"1", "123456"})));
-        assertEquals("01", 
+        assertEquals("10", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/PadWithZeros.rml"), new String[]{"1", "19"})));
         assertEquals("19", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/PadWithZeros.rml"), new String[]{"19", "1"})));
@@ -432,7 +432,7 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException {
 		builder = new AremelleProgramBuilder();
-        assertEquals("2", 
+        /*assertEquals("2", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1", "1"})));
         assertEquals("100", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"47", "53"})));
@@ -450,6 +450,14 @@ public class ExecutorTest {
         		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1.1", "1.01"})));
         assertEquals("2.11", 
         		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1.01", "1.1"})));
+        assertEquals("5.9256", 
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"3.1456", "2.78"})));
+        assertEquals("10.001", 
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"10", "0.001"})));
+        assertEquals("-10.001", 
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"-10", "-0.001"})));*/
+        assertEquals("0.000001", 
+        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"0.00", "00.000001"})));
 	}
 	
 	@Test
@@ -467,6 +475,8 @@ public class ExecutorTest {
         		executor.evaluateProgram(builder.build("define func: a | {''}:a = a.", new String[]{""})));
         assertEquals("2", 
         		executor.evaluateProgram(builder.build("define func: {1}:a | {2}:a = a.", new String[]{"2"})));
+        assertEquals("2", 
+        		executor.evaluateProgram(builder.build("define func: {2}:a | {1}:a = a.", new String[]{"2"})));
         try {
         	executor.evaluateProgram(builder.build("define func: {1}:a | {2}:a = a.", new String[]{"3"}));
         	assertTrue(false);
