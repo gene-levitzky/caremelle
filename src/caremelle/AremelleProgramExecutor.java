@@ -158,7 +158,12 @@ public class AremelleProgramExecutor {
 					Function callingFunction = context.getCallingFunction();
 					Function calledFunction = callingFunction.getScope().getFunction(aefc.getName());
 					if (calledFunction == null) {
-						String functionName = callingFunction.getScope().getParameter(aefc.getName()).getValue();
+						Parameter parameterFunction = 
+								callingFunction.getScope().getParameter(aefc.getName());
+						if (parameterFunction == null) {
+							throw new UndeclaredVariableException(aefc.getName());
+						}
+						String functionName = parameterFunction.getValue();
 						if (functionName == null) {
 							throw new UndefinedVariableException(aefc.getName());
 						}

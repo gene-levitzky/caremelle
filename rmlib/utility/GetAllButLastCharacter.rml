@@ -1,0 +1,3 @@
+define getAllButLastCharacter:
+	'.' = '';
+	string {'.'}:char = string.

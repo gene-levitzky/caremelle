@@ -1,11 +1,6 @@
-define add:
+import 'rmlib/utility'.
 
-    define getLastCharacter:
-		string {'.'}:char | {'.'}:char = char.  
-        
-    define getAllButLastCharacter:
-		'.' = '';
-		string {'.'}:char = string.  
+define add: 
         
     define appendDigitWithCarry:
 	    9, 'c' space = 'c' 0 space;
@@ -13,21 +8,6 @@ define add:
 	    1 a, $space = 'c' a space;
 	    a, 'c' space = inc(a) space;
 	    a, $space = a space.
-        
-    define padWithZeros:
-        '', '', $result = result;
-        '', m, $result = padWithZeros(
-            '', 
-            getAllButLastCharacter(m), 
-            result 0
-        );
-        n, '', $result = n result;
-        n, m, $result = padWithZeros(
-            getAllButLastCharacter(n), 
-            getAllButLastCharacter(m), 
-            getLastCharacter(n) result
-        );
-        n, m = padWithZeros(n, m, '').
         
     define clearCarry:
         'c' space = '1' space;

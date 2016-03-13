@@ -9,7 +9,7 @@ public class Program {
 	private final Function function, baseFunction;
 	private final AtomicExpressionFunctionCall functionCall;
 	
-	public Program(Function function, String[] inputArgs) {
+	public Program(Function function, Function[] importedFunctions, String[] inputArgs) {
 		
 		Expression[] args = new Expression[inputArgs.length];
 		for (int i = 0; i < args.length; i++) {
@@ -24,6 +24,10 @@ public class Program {
 		baseFunction.getScope().addFunction(function);
 		
 		for (Function f : Function.getNativeFunctions()) {
+			f.setParentScope(baseFunction.getScope());
+			baseFunction.getScope().addFunction(f);
+		}
+		for (Function f : importedFunctions) {
 			f.setParentScope(baseFunction.getScope());
 			baseFunction.getScope().addFunction(f);
 		}

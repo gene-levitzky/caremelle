@@ -3,6 +3,7 @@ package caremelle;
 import java.io.FileReader;
 import java.io.IOException;
 
+import exceptions.CannotImportFunctionException;
 import exceptions.NoMatchingSignatureException;
 import exceptions.NotANumberException;
 import exceptions.UndeclaredVariableException;
@@ -14,7 +15,8 @@ public class Caremelle {
 			UndefinedVariableException, 
 			NoMatchingSignatureException, 
 			NotANumberException, 
-			UndeclaredVariableException {
+			UndeclaredVariableException, 
+			CannotImportFunctionException {
 		
 		if (args.length == 0) {
 			System.out.println("To run an Aremelle program, supply the path to "

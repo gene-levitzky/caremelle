@@ -1,12 +1,16 @@
 package caremelle;
 
+import java.util.List;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
+import exceptions.CannotImportFunctionException;
 import antlr.AremelleLexer;
 import antlr.AremelleParser;
 import antlr.AremelleParser.ArgumentsContext;
@@ -14,6 +18,7 @@ import antlr.AremelleParser.AtomicExpressionContext;
 import antlr.AremelleParser.ExpressionContext;
 import antlr.AremelleParser.FunctionBodyContext;
 import antlr.AremelleParser.FunctionContext;
+import antlr.AremelleParser.ImportStatementContext;
 import antlr.AremelleParser.ParameterContext;
 import antlr.AremelleParser.PatternContext;
 import antlr.AremelleParser.ProgramContext;
@@ -35,23 +40,71 @@ public class AremelleProgramBuilder {
 	
 	public AremelleProgramBuilder(){}
 	
-	public Program build(FileReader fileReader, String[] args) throws FileNotFoundException, IOException {
-		return parse(new AremelleLexer(new ANTLRInputStream(fileReader)), args);
+	public Program build(FileReader fileReader, String[] args) 
+			throws CannotImportFunctionException, IOException {
+		return parse(getLexer(fileReader), args);
 	}
 	
-	public Program build(String code, String[] args) throws FileNotFoundException, IOException {
-		return parse(new AremelleLexer(new ANTLRInputStream(code)), args);
+	public Program build(String code, String[] args) 
+			throws CannotImportFunctionException, IOException {
+		return parse(getLexer(code), args);
 	}
 	
-	private Program parse(AremelleLexer lexer, String[] args) {
+	private Program parse(AremelleLexer lexer, String[] args)
+			throws CannotImportFunctionException {
+        return constructProgram(getProgramContext(lexer), args);
+	}
+	
+	private ProgramContext getProgramContext(AremelleLexer lexer) {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
         AremelleParser parser = new AremelleParser(tokens);
-        ProgramContext programContext = parser.program();
-        return constructProgram(programContext, args);
+        return parser.program();
 	}
 	
-	public Program constructProgram(ProgramContext programContext, String[] args) {
-    	return new Program(constructFunction(programContext.function()), args);
+	private AremelleLexer getLexer(FileReader reader) throws IOException {
+		return new AremelleLexer(new ANTLRInputStream(reader));
+	}
+	
+	private AremelleLexer getLexer(String code) throws IOException {
+		return new AremelleLexer(new ANTLRInputStream(code));
+	}
+	
+	public Program constructProgram(ProgramContext programContext, String[] args) 
+			throws CannotImportFunctionException {
+		
+		List<Function> importedFunctions = new ArrayList<Function>();
+		for (int i = 0; i < programContext.importStatement().size(); i++) {
+			ImportStatementContext isc = programContext.importStatement(i);
+			String filename = isc.String().getText();
+			filename = filename.substring(1, isc.String().getText().length() - 1);
+			try {
+				if (filename.endsWith(".rml")) {
+					AremelleLexer lexer = getLexer(new FileReader(filename));
+					ProgramContext importedProgram = getProgramContext(lexer);
+					Function importedFunction = constructFunction(importedProgram.function());
+					importedFunctions.add(importedFunction);
+				}
+				else {
+					File[] files = new File(filename).listFiles();
+					if (files != null) {
+						for (File f : files) {
+							AremelleLexer lexer = getLexer(new FileReader(f));
+							ProgramContext importedProgram = getProgramContext(lexer);
+							Function importedFunction = constructFunction(importedProgram.function());
+							importedFunctions.add(importedFunction);
+						}
+					}
+				}
+			}
+			catch(NullPointerException | IOException e1) {
+				throw new CannotImportFunctionException(filename);
+			}
+		}
+		Function[] importedFunctionsArray = new Function[importedFunctions.size()];
+		for (int i = 0; i < importedFunctionsArray.length; i++) {
+			importedFunctionsArray[i] = importedFunctions.get(i);
+		}
+    	return new Program(constructFunction(programContext.function()), importedFunctionsArray, args);
     }
     
     private Function constructFunction(FunctionContext functionContext) {

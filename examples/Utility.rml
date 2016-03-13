@@ -1,0 +1,10 @@
+define Utility:
+	define getLastCharacter:
+		string {'.'}:char | {'.'}:char = char.  
+	        
+	define getAllButLastCharacter:
+		'.' = '';
+		string {'.'}:char = string.
+	
+	'getLastCharacter', arg = getLastCharacter(arg);
+	'getAllButLastCharacter', arg = getAllButLastCharacter(arg).
