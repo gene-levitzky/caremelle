@@ -36,9 +36,23 @@ import aremelle.Signature;
 import aremelle.Program;
 import aremelle.RewriteRule;
 
+/**
+ * This class constructs Aremelle Program objects which may be passed to the
+ * AremelleProgramExecutor for execution.
+ *  
+ * @author Gene
+ *
+ */
 public class AremelleProgramBuilder {
 	
 	public AremelleProgramBuilder(){}
+	
+	public Program build(File file, String[] args) 
+			throws FileNotFoundException, 
+			CannotImportFunctionException, 
+			IOException {
+		return parse(getLexer(new FileReader(file)), args);
+	}
 	
 	public Program build(FileReader fileReader, String[] args) 
 			throws CannotImportFunctionException, IOException {
@@ -69,43 +83,54 @@ public class AremelleProgramBuilder {
 		return new AremelleLexer(new ANTLRInputStream(code));
 	}
 	
-	public Program constructProgram(ProgramContext programContext, String[] args) 
+	public Program constructProgram(ProgramContext pc, String[] args) 
 			throws CannotImportFunctionException {
 		
-		List<Function> importedFunctions = new ArrayList<Function>();
-		for (int i = 0; i < programContext.importStatement().size(); i++) {
-			ImportStatementContext isc = programContext.importStatement(i);
+		Function mainFunction = constructFunction(pc.function());
+		Function[] imports = getImportedFunctions(pc);
+		
+    	return new Program(mainFunction, imports, args);
+    }
+	
+	private Function[] getImportedFunctions(ProgramContext pc) 
+			throws CannotImportFunctionException {
+		List<Function> importList = new ArrayList<Function>();
+		for (int i = 0; i < pc.importStatement().size(); i++) {
+			ImportStatementContext isc = pc.importStatement(i);
 			String filename = isc.String().getText();
-			filename = filename.substring(1, isc.String().getText().length() - 1);
+			filename = filename.substring(1, filename.length() - 1);
 			try {
-				if (filename.endsWith(".rml")) {
-					AremelleLexer lexer = getLexer(new FileReader(filename));
-					ProgramContext importedProgram = getProgramContext(lexer);
-					Function importedFunction = constructFunction(importedProgram.function());
-					importedFunctions.add(importedFunction);
-				}
-				else {
-					File[] files = new File(filename).listFiles();
-					if (files != null) {
-						for (File f : files) {
-							AremelleLexer lexer = getLexer(new FileReader(f));
-							ProgramContext importedProgram = getProgramContext(lexer);
-							Function importedFunction = constructFunction(importedProgram.function());
-							importedFunctions.add(importedFunction);
-						}
-					}
-				}
+				getImportedFunctions(new File(filename), importList);
 			}
-			catch(NullPointerException | IOException e1) {
+			catch(IOException e1) {
 				throw new CannotImportFunctionException(filename);
 			}
 		}
-		Function[] importedFunctionsArray = new Function[importedFunctions.size()];
-		for (int i = 0; i < importedFunctionsArray.length; i++) {
-			importedFunctionsArray[i] = importedFunctions.get(i);
+		Function[] importedArray = new Function[importList.size()];
+		for (int i = 0; i < importedArray.length; i++) {
+			importedArray[i] = importList.get(i);
 		}
-    	return new Program(constructFunction(programContext.function()), importedFunctionsArray, args);
-    }
+		return importedArray;
+	}
+	
+	private void getImportedFunctions(File file, List<Function> functions) 
+			throws FileNotFoundException, IOException, CannotImportFunctionException {
+		if (!file.exists()) {
+			throw new CannotImportFunctionException(file.getName());
+		}
+		if (file.getName().endsWith(".rml")) {
+			AremelleLexer lexer = getLexer(new FileReader(file));
+			ProgramContext importedProgram = getProgramContext(lexer);
+			Function importedFunction = constructFunction(importedProgram.function());
+			functions.add(importedFunction);
+		}
+		else if (file.isDirectory()){
+			File[] files = file.listFiles();
+			for (File f : files) {
+				getImportedFunctions(f, functions);
+			}
+		}
+	}
     
     private Function constructFunction(FunctionContext functionContext) {
     	FunctionBodyContext fbc = functionContext.functionBody();
@@ -119,7 +144,8 @@ public class AremelleProgramBuilder {
     		rules[i] = constructRewriteRule(fbc.rewriteRules().rewriteRule(i));
     	}
     	Expression expression = fbc.expression() != null ? constructExpression(fbc.expression()) : null;
-    	return new Function(functionContext.Identifier().getText(), nestedFunctions, expression, rules);
+    	String functionName = functionContext.Identifier().getText();
+    	return new Function(functionName, nestedFunctions, expression, rules);
     }
     
     private RewriteRule constructRewriteRule(RewriteRuleContext sc) {
@@ -170,8 +196,9 @@ public class AremelleProgramBuilder {
     }
 
 	private Expression constructExpression(ExpressionContext expressionContext) {
-    	AtomicExpression[] atomicExpressions = new AtomicExpression[expressionContext.atomicExpression().size()];
-    	for (int i = 0; i < atomicExpressions.length; i++) {
+		int size = expressionContext.atomicExpression().size();
+    	AtomicExpression[] atomicExpressions = new AtomicExpression[size];
+    	for (int i = 0; i < size; i++) {
     		atomicExpressions[i] = constructAtomicExpression(expressionContext.atomicExpression(i));
     	}
     	return new Expression(atomicExpressions);

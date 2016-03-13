@@ -40,7 +40,9 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build("define echo: input = input.", new String[]{"test"});
+        Program program = builder.build(
+        		"define echo: input = input.", 
+        		new String[]{"test"});
         String out = executor.evaluateProgram(program);
         assertEquals("test", out);
 	}
@@ -54,7 +56,9 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build(new FileReader("examples/MultiParameterPattern"), new String[]{"left,right", "other"});
+        Program program = builder.build(
+        		new FileReader("examples/MultiParameterPattern"), 
+        		new String[]{"left,right", "other"});
         String out = executor.evaluateProgram(program);
         assertEquals("right", out);
 	}
@@ -68,7 +72,9 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build(new FileReader("examples/Persistence.rml"), new String[]{"nonce", "remember?"});
+        Program program = builder.build(
+        		new FileReader("examples/Persistence.rml"), 
+        		new String[]{"nonce", "remember?"});
         String out = executor.evaluateProgram(program);
         assertEquals("testing...remember?", out);
 	}
@@ -82,7 +88,9 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build(new FileReader("examples/ShouldntPersist"), new String[]{"dontremember", "1"});
+        Program program = builder.build(
+        		new FileReader("examples/ShouldntPersist"), 
+        		new String[]{"dontremember", "1"});
         String out = executor.evaluateProgram(program);
         assertEquals("dontremeber", out);
 	}
@@ -96,7 +104,9 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build(new FileReader("examples/Scope.rml"), new String[]{"test"});
+        Program program = builder.build(
+        		new FileReader("examples/Scope.rml"), 
+        		new String[]{"test"});
         String out = executor.evaluateProgram(program);
         assertEquals("test", out);
 	}
@@ -110,7 +120,9 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build(new FileReader("examples/ParameterOverwriting.rml"), new String[]{"3"});
+        Program program = builder.build(
+        		new FileReader("examples/ParameterOverwriting.rml"), 
+        		new String[]{"3"});
         String out = executor.evaluateProgram(program);
         assertEquals("done", out);
 	}
@@ -124,7 +136,9 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build("define echo: $empty = 'it works!'.", new String[]{""});
+        Program program = builder.build(
+        		"define echo: $empty = 'it works!'.", 
+        		new String[]{""});
         String out = executor.evaluateProgram(program);
         assertEquals("it works!", out);
 	}
@@ -139,15 +153,21 @@ public class ExecutorTest {
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
 		
-        Program program = builder.build("define split: $left ',' $right = left.", new String[]{"left,right"});
+        Program program = builder.build(
+        		"define split: $left ',' $right = left.", 
+        		new String[]{"left,right"});
         String out = executor.evaluateProgram(program);
         assertEquals("left", out);
         
-        program = builder.build("define split: $left ',' $right = left.", new String[]{",right"});
+        program = builder.build(
+        		"define split: $left ',' $right = left.", 
+        		new String[]{",right"});
         out = executor.evaluateProgram(program);
         assertEquals("", out);
         
-        program = builder.build("define split: $left ',' $right = left.", new String[]{","});
+        program = builder.build(
+        		"define split: $left ',' $right = left.", 
+        		new String[]{","});
         out = executor.evaluateProgram(program);
         assertEquals("", out);
 	}
@@ -161,7 +181,9 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build("define double: define doubleHelper:	b = b b. a = doubleHelper(a) a.", new String[]{"test"});
+        Program program = builder.build(
+        		"define double: define doubleHelper: b = b b. a = doubleHelper(a) a.", 
+        		new String[]{"test"});
         String out = executor.evaluateProgram(program);
         assertEquals("testtesttest", out);
 	}
@@ -175,7 +197,9 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build("define pi: 3.14.", new String[]{"test"});
+        Program program = builder.build(
+        		"define pi: 3.14.", 
+        		new String[]{"test"});
         String out = executor.evaluateProgram(program);
         assertEquals("3.14", out);
 	}
@@ -189,7 +213,9 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build("define test: int = inc(int).", new String[]{"1"});
+        Program program = builder.build(
+        		"define test: int = inc(int).", 
+        		new String[]{"1"});
         String out = executor.evaluateProgram(program);
         assertEquals("2", out);
 	}
@@ -203,283 +229,326 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build("define outer: define inner: a = a. b = inner(b).", new String[]{"1"});
+        Program program = builder.build(
+        		"define outer: define inner: a = a. b = inner(b).", 
+        		new String[]{"1"});
         String out = executor.evaluateProgram(program);
         assertEquals("1", out);
 	}
 
 	@Test
 	public void testMultiExpressionResult() 
-			throws FileNotFoundException
-			, IOException
+			throws 
+			IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build("define outer: a = inc(a) inc(a).", new String[]{"1"});
+        Program program = builder.build(
+        		"define outer: a = inc(a) inc(a).", 
+        		new String[]{"1"});
         String out = executor.evaluateProgram(program);
         assertEquals("22", out);
 	}
 	
 	@Test
 	public void testRecursiveCall() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build("define count: 10 = 'done'; counter = count(inc(counter)).", new String[]{"1"});
+        Program program = builder.build(
+        		"define count: 10 = 'done'; counter = count(inc(counter)).", 
+        		new String[]{"1"});
         String out = executor.evaluateProgram(program);
         assertEquals("done", out);
 	}
 	
 	@Test
 	public void testOut() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build("define echo: output = out(output).", new String[]{"Hello, World!"});
+        Program program = builder.build(
+        		"define echo: output = out(output).", 
+        		new String[]{"Hello, World!"});
         String out = executor.evaluateProgram(program);
         assertEquals("", out);
 	}
 	
 	@Test
 	public void testIn() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build("define echo: in().", new String[]{"Hello, World!"});
+        Program program = builder.build(
+        		"define echo: in().", 
+        		new String[]{"Hello, World!"});
         //String out = executor.evaluateProgram(program);
 	}
 	
 	@Test
 	public void testInComplex() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build("define echo: define helper: input = input input. helper(in()).", new String[]{"Hello, World!"});
+        Program program = builder.build(
+        		"define echo: define helper: input = input input. helper(in()).",
+        		new String[]{"Hello, World!"});
         //String out = executor.evaluateProgram(program);
 	}
 	
 	@Test
 	public void testAddNaive() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build(new FileReader("examples/Program0.rml"), new String[]{"200000", "10000"});
+        Program program = builder.build(
+        		new FileReader("examples/Program0.rml"), 
+        		new String[]{"200000", "10000"});
         String out = executor.evaluateProgram(program);
         assertEquals("210000", out);
 	}
 	
 	@Test
 	public void testMultNaiveFlatFunctions() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build(new FileReader("examples/Program1.rml"), new String[]{"100000", "2"});
+        Program program = builder.build(
+        		new FileReader("examples/Program1.rml"), 
+        		new String[]{"100000", "2"});
         String out = executor.evaluateProgram(program);
         assertEquals("200000", out);
 	}
 	
 	@Test
 	public void testMultNaiveNestedFunctions() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        Program program = builder.build(new FileReader("examples/Program2.rml"), new String[]{"100000", "2"});
+        Program program = builder.build(
+        		new FileReader("examples/Program2.rml"), 
+        		new String[]{"100000", "2"});
         String out = executor.evaluateProgram(program);
         assertEquals("200000", out);
 	}
 	
 	@Test
 	public void testAppendDigitWithCarry() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        assertEquals("c52", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"15", "2"})));
-        assertEquals("60", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"5", "c0"})));
-        assertEquals("c01", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"9", "c1"})));
-        assertEquals("45", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"4", "5"})));
-        assertEquals("c55", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"14", "c5"})));
-        assertEquals("55", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"4", "c5"})));
-        assertEquals("9", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"9", ""})));
-        assertEquals("20", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/AppendDigitWithCarry.rml"), new String[]{"1", "c0"})));
+        assertEquals("c52", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/AppendDigitWithCarry.rml"), 
+        		new String[]{"15", "2"})));
+        assertEquals("60", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/AppendDigitWithCarry.rml"), 
+        		new String[]{"5", "c0"})));
+        assertEquals("c01", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/AppendDigitWithCarry.rml"), 
+        		new String[]{"9", "c1"})));
+        assertEquals("45", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/AppendDigitWithCarry.rml"), 
+        		new String[]{"4", "5"})));
+        assertEquals("c55", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/AppendDigitWithCarry.rml"), 
+        		new String[]{"14", "c5"})));
+        assertEquals("55", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/AppendDigitWithCarry.rml"), 
+        		new String[]{"4", "c5"})));
+        assertEquals("9", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/AppendDigitWithCarry.rml"), 
+        		new String[]{"9", ""})));
+        assertEquals("20", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/AppendDigitWithCarry.rml"), 
+        		new String[]{"1", "c0"})));
 	}
 	
 	@Test
 	public void testGetLastCharacter() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
-        assertEquals("r", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/GetLastCharacter.rml"), new String[]{"lastcharacter"})));
-        assertEquals("r", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/GetLastCharacter.rml"), new String[]{"r"})));
+        assertEquals("r", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/GetLastCharacter.rml"), 
+        		new String[]{"lastcharacter"})));
+        assertEquals("r", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/GetLastCharacter.rml"), 
+        		new String[]{"r"})));
 	}
 	
 	@Test(expected = NoMatchingSignatureException.class)
 	public void testGetLastCharacterEmptyString() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
-		Program program = builder.build(new FileReader("examples/GetLastCharacter.rml"), new String[]{""});
+		Program program = builder.build(
+				new FileReader("examples/GetLastCharacter.rml"), 
+				new String[]{""});
         String out = executor.evaluateProgram(program);
         assertEquals("", out);
 	}
 	
 	@Test
 	public void testGetAllButLastCharacter() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
-        assertEquals("lastcharacte", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/GetAllButLastCharacter.rml"), new String[]{"lastcharacter"})));
-        assertEquals("", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/GetAllButLastCharacter.rml"), new String[]{"r"})));
+        assertEquals("lastcharacte", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/GetAllButLastCharacter.rml"), 
+        		new String[]{"lastcharacter"})));
+        assertEquals("", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/GetAllButLastCharacter.rml"), 
+        		new String[]{"r"})));
 	}
 	
 	@Test
 	public void testPadWithZeros() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        assertEquals("100000", 
-        		executor.evaluateProgram(builder.build(new FileReader("rmlib/utility/PadWithZeros.rml"), new String[]{"1", "123456"})));
-        assertEquals("10", 
-        		executor.evaluateProgram(builder.build(new FileReader("rmlib/utility/PadWithZeros.rml"), new String[]{"1", "19"})));
-        assertEquals("19", 
-        		executor.evaluateProgram(builder.build(new FileReader("rmlib/utility/PadWithZeros.rml"), new String[]{"19", "1"})));
-        assertEquals("123", 
-        		executor.evaluateProgram(builder.build(new FileReader("rmlib/utility/PadWithZeros.rml"), new String[]{"123", "123"})));
-        assertEquals("123456", 
-        		executor.evaluateProgram(builder.build(new FileReader("rmlib/utility/PadWithZeros.rml"), new String[]{"123456", "12345"})));
-        assertEquals("4", 
-        		executor.evaluateProgram(builder.build(new FileReader("rmlib/utility/PadWithZeros.rml"), new String[]{"4", "5"})));
-        assertEquals("5", 
-        		executor.evaluateProgram(builder.build(new FileReader("rmlib/utility/PadWithZeros.rml"), new String[]{"5", "4"})));
+        assertEquals("100000", executor.evaluateProgram(builder.build(
+        		new FileReader("rmlib/utility/PadWithZeros.rml"), 
+        		new String[]{"1", "123456"})));
+        assertEquals("10", executor.evaluateProgram(builder.build(
+        		new FileReader("rmlib/utility/PadWithZeros.rml"), 
+        		new String[]{"1", "19"})));
+        assertEquals("19", executor.evaluateProgram(builder.build(
+        		new FileReader("rmlib/utility/PadWithZeros.rml"), 
+        		new String[]{"19", "1"})));
+        assertEquals("123", executor.evaluateProgram(builder.build(
+        		new FileReader("rmlib/utility/PadWithZeros.rml"), 
+        		new String[]{"123", "123"})));
+        assertEquals("123456", executor.evaluateProgram(builder.build(
+        		new FileReader("rmlib/utility/PadWithZeros.rml"), 
+        		new String[]{"123456", "12345"})));
+        assertEquals("4", executor.evaluateProgram(builder.build(
+        		new FileReader("rmlib/utility/PadWithZeros.rml"), 
+        		new String[]{"4", "5"})));
+        assertEquals("5", executor.evaluateProgram(builder.build(
+        		new FileReader("rmlib/utility/PadWithZeros.rml"), 
+        		new String[]{"5", "4"})));
 	}
 	
 	@Test
 	public void testNaiveAdd() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        assertEquals("9", 
-        		executor.evaluateProgram(builder.build("define naiveAdd: a, 0 = a; a, b = naiveAdd(inc(a), dec(b)).", 
-        				new String[]{"4", "5"})));
+        assertEquals("9", executor.evaluateProgram(builder.build(
+        		"define naiveAdd: a, 0 = a; a, b = naiveAdd(inc(a), dec(b)).", 
+        		new String[]{"4", "5"})));
 	}
 	
 	@Test
 	public void testAdd() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        assertEquals("2", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1", "1"})));
-        assertEquals("100", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"47", "53"})));
-        assertEquals("10", 
-                		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1", "9"})));
-        assertEquals("20", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1", "19"})));
-        assertEquals("15299172044422", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"9999084587961", "5300087456461"})));
-        assertEquals("-15299172044422", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"-9999084587961", "-5300087456461"})));
-        assertEquals("2.2", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1.1", "1.1"})));
-        assertEquals("2.11", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1.1", "1.01"})));
-        assertEquals("2.11", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"1.01", "1.1"})));
-        assertEquals("5.9256", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"3.1456", "2.78"})));
-        assertEquals("10.001", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"10", "0.001"})));
-        assertEquals("-10.001", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"-10", "-0.001"})));
-        assertEquals("0.000001", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Add.rml"), new String[]{"0.00", "00.000001"})));
+        assertEquals("2", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Add.rml"), 
+        		new String[]{"1", "1"})));
+        assertEquals("100", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Add.rml"), 
+        		new String[]{"47", "53"})));
+        assertEquals("10", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Add.rml"), 
+        		new String[]{"1", "9"})));
+        assertEquals("20", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Add.rml"), 
+        		new String[]{"1", "19"})));
+        assertEquals("15299172044422", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Add.rml"), 
+        		new String[]{"9999084587961", "5300087456461"})));
+        assertEquals("-15299172044422", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Add.rml"), 
+        		new String[]{"-9999084587961", "-5300087456461"})));
+        assertEquals("2.2", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Add.rml"), 
+        		new String[]{"1.1", "1.1"})));
+        assertEquals("2.11", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Add.rml"), 
+        		new String[]{"1.1", "1.01"})));
+        assertEquals("2.11", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Add.rml"), 
+        		new String[]{"1.01", "1.1"})));
+        assertEquals("5.9256", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Add.rml"), 
+        		new String[]{"3.1456", "2.78"})));
+        assertEquals("10.001", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Add.rml"), 
+        		new String[]{"10", "0.001"})));
+        assertEquals("-10.001", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Add.rml"), 
+        		new String[]{"-10", "-0.001"})));
+        assertEquals("0.000001", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Add.rml"), 
+        		new String[]{"0.00", "00.000001"})));
 	}
 	
 	@Test
 	public void testMultiParamStatements() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        assertEquals("test", 
-        		executor.evaluateProgram(builder.build("define func: a | {''}:a = a.", new String[]{"test"})));
-        assertEquals("", 
-        		executor.evaluateProgram(builder.build("define func: a | {''}:a = a.", new String[]{""})));
-        assertEquals("2", 
-        		executor.evaluateProgram(builder.build("define func: {1}:a | {2}:a = a.", new String[]{"2"})));
-        assertEquals("2", 
-        		executor.evaluateProgram(builder.build("define func: {2}:a | {1}:a = a.", new String[]{"2"})));
+        assertEquals("test", executor.evaluateProgram(builder.build(
+        		"define func: a | {''}:a = a.", 
+        		new String[]{"test"})));
+        assertEquals("", executor.evaluateProgram(builder.build(
+        		"define func: a | {''}:a = a.", 
+        		new String[]{""})));
+        assertEquals("2", executor.evaluateProgram(builder.build(
+        		"define func: {1}:a | {2}:a = a.", 
+        		new String[]{"2"})));
+        assertEquals("2", executor.evaluateProgram(builder.build(
+        		"define func: {2}:a | {1}:a = a.", 
+        		new String[]{"2"})));
         try {
-        	executor.evaluateProgram(builder.build("define func: {1}:a | {2}:a = a.", new String[]{"3"}));
+        	executor.evaluateProgram(builder.build(
+        			"define func: {1}:a | {2}:a = a.", 
+        			new String[]{"3"}));
         	assertTrue(false);
         }
         catch (NoMatchingSignatureException e) {}
@@ -487,23 +556,27 @@ public class ExecutorTest {
 	
 	@Test
 	public void testEquals() 
-			throws FileNotFoundException
-			, IOException
+			throws IOException
 			, UndefinedVariableException
 			, NoMatchingSignatureException
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        assertEquals("true", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Equals.rml"), new String[]{"test", "test"})));
-        assertEquals("false", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Equals.rml"), new String[]{"test", "ssd"})));
-        assertEquals("false", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Equals.rml"), new String[]{"", "test"})));
-        assertEquals("false", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Equals.rml"), new String[]{"test", ""})));
-        assertEquals("true", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Equals.rml"), new String[]{"", ""})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Equals.rml"), 
+        		new String[]{"test", "test"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Equals.rml"), 
+        		new String[]{"test", "ssd"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Equals.rml"), 
+        		new String[]{"", "test"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Equals.rml"), 
+        		new String[]{"test", ""})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Equals.rml"), 
+        		new String[]{"", ""})));
 	}
 	
 	@Test
@@ -515,20 +588,27 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        assertEquals("false", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{"test"})));
-        assertEquals("true", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{"otto"})));
-        assertEquals("true", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{"madamimadam"})));
-        assertEquals("false", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{"ta"})));
-        assertEquals("true", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{"aa"})));
-        assertEquals("true", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{""})));
-        assertEquals("false", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Palindrome.rml"), new String[]{"abcd"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Palindrome.rml"), 
+        		new String[]{"test"})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Palindrome.rml"), 
+        		new String[]{"otto"})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Palindrome.rml"), 
+        		new String[]{"madamimadam"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Palindrome.rml"), 
+        		new String[]{"ta"})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Palindrome.rml"), 
+        		new String[]{"aa"})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Palindrome.rml"), 
+        		new String[]{""})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Palindrome.rml"), 
+        		new String[]{"abcd"})));
 	}
 	
 	@Test
@@ -540,7 +620,8 @@ public class ExecutorTest {
 			, NotANumberException
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
-        assertEquals("false", 
-        		executor.evaluateProgram(builder.build(new FileReader("examples/Import1.rml"), new String[]{"test"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("examples/Import1.rml"), 
+        		new String[]{"test"})));
 	}
 }
