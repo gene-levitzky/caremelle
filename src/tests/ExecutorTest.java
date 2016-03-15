@@ -441,25 +441,25 @@ public class ExecutorTest {
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
         assertEquals("100000", executor.evaluateProgram(builder.build(
-        		new FileReader("rmlib/utility/PadWithZeros.rml"), 
+        		new FileReader("rml/utility/PadWithZeros.rml"), 
         		new String[]{"1", "123456"})));
         assertEquals("10", executor.evaluateProgram(builder.build(
-        		new FileReader("rmlib/utility/PadWithZeros.rml"), 
+        		new FileReader("rml/utility/PadWithZeros.rml"), 
         		new String[]{"1", "19"})));
         assertEquals("19", executor.evaluateProgram(builder.build(
-        		new FileReader("rmlib/utility/PadWithZeros.rml"), 
+        		new FileReader("rml/utility/PadWithZeros.rml"), 
         		new String[]{"19", "1"})));
         assertEquals("123", executor.evaluateProgram(builder.build(
-        		new FileReader("rmlib/utility/PadWithZeros.rml"), 
+        		new FileReader("rml/utility/PadWithZeros.rml"), 
         		new String[]{"123", "123"})));
         assertEquals("123456", executor.evaluateProgram(builder.build(
-        		new FileReader("rmlib/utility/PadWithZeros.rml"), 
+        		new FileReader("rml/utility/PadWithZeros.rml"), 
         		new String[]{"123456", "12345"})));
         assertEquals("4", executor.evaluateProgram(builder.build(
-        		new FileReader("rmlib/utility/PadWithZeros.rml"), 
+        		new FileReader("rml/utility/PadWithZeros.rml"), 
         		new String[]{"4", "5"})));
         assertEquals("5", executor.evaluateProgram(builder.build(
-        		new FileReader("rmlib/utility/PadWithZeros.rml"), 
+        		new FileReader("rml/utility/PadWithZeros.rml"), 
         		new String[]{"5", "4"})));
 	}
 	
@@ -485,43 +485,43 @@ public class ExecutorTest {
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
         assertEquals("2", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Add.rml"), 
+        		new FileReader("rml/math/arithmetic/add.rml"), 
         		new String[]{"1", "1"})));
         assertEquals("100", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Add.rml"), 
+        		new FileReader("rml/math/arithmetic/add.rml"), 
         		new String[]{"47", "53"})));
         assertEquals("10", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Add.rml"), 
+        		new FileReader("rml/math/arithmetic/add.rml"), 
         		new String[]{"1", "9"})));
         assertEquals("20", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Add.rml"), 
+        		new FileReader("rml/math/arithmetic/add.rml"), 
         		new String[]{"1", "19"})));
         assertEquals("15299172044422", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Add.rml"), 
+        		new FileReader("rml/math/arithmetic/add.rml"), 
         		new String[]{"9999084587961", "5300087456461"})));
         assertEquals("-15299172044422", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Add.rml"), 
+        		new FileReader("rml/math/arithmetic/add.rml"), 
         		new String[]{"-9999084587961", "-5300087456461"})));
         assertEquals("2.2", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Add.rml"), 
+        		new FileReader("rml/math/arithmetic/add.rml"), 
         		new String[]{"1.1", "1.1"})));
         assertEquals("2.11", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Add.rml"), 
+        		new FileReader("rml/math/arithmetic/add.rml"), 
         		new String[]{"1.1", "1.01"})));
         assertEquals("2.11", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Add.rml"), 
+        		new FileReader("rml/math/arithmetic/add.rml"), 
         		new String[]{"1.01", "1.1"})));
         assertEquals("5.9256", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Add.rml"), 
+        		new FileReader("rml/math/arithmetic/add.rml"), 
         		new String[]{"3.1456", "2.78"})));
         assertEquals("10.001", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Add.rml"), 
+        		new FileReader("rml/math/arithmetic/add.rml"), 
         		new String[]{"10", "0.001"})));
         assertEquals("-10.001", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Add.rml"), 
+        		new FileReader("rml/math/arithmetic/add.rml"), 
         		new String[]{"-10", "-0.001"})));
         assertEquals("0.000001", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Add.rml"), 
+        		new FileReader("rml/math/arithmetic/add.rml"), 
         		new String[]{"0.00", "00.000001"})));
 	}
 	
@@ -563,19 +563,19 @@ public class ExecutorTest {
 			, UndeclaredVariableException, CannotImportFunctionException {
 		builder = new AremelleProgramBuilder();
         assertEquals("true", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Equals.rml"), 
+        		new FileReader("rml/utility/equals.rml"), 
         		new String[]{"test", "test"})));
         assertEquals("false", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Equals.rml"), 
+        		new FileReader("rml/utility/equals.rml"), 
         		new String[]{"test", "ssd"})));
         assertEquals("false", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Equals.rml"), 
+        		new FileReader("rml/utility/equals.rml"), 
         		new String[]{"", "test"})));
         assertEquals("false", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Equals.rml"), 
+        		new FileReader("rml/utility/equals.rml"), 
         		new String[]{"test", ""})));
         assertEquals("true", executor.evaluateProgram(builder.build(
-        		new FileReader("examples/Equals.rml"), 
+        		new FileReader("rml/utility/equals.rml"), 
         		new String[]{"", ""})));
 	}
 	
