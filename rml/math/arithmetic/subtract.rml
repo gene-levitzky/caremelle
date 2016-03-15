@@ -1,0 +1,42 @@
+import 'rml/utility'.
+
+define subtract:
+    
+		define naiveSubtract:
+		    a, 0 = a;
+				a, b = naiveSubtract(dec(a), dec(b)).
+				
+		define appendWithCarry:
+		    a '0', 'c' {'.'}:d $b = a 'c'
+				
+		define specialDec:
+		    0 = 9;
+				n = dec(n).
+				
+	  a, b, '-'previous, space = 
+		    getAllButLastCharacter(a), 
+				getAllButLastCharacter(b),  
+				naiveSubtract(
+				    specialDec(getLastCharacter(a)),
+						getLastCharacter(b)),
+				naiveSubtract(10, previous) space;
+				
+		a, b, previous, space = 
+		    getAllButLastCharacter(a), 
+				getAllButLastCharacter(b),  
+				naiveSubtract(
+				    getLastCharacter(a),
+						getLastCharacter(b)),
+				naiveSubtract(10, previous) space;
+				
+		bGa, a, b = 
+		
+		"entry point, integers"
+		'-'a, '-'b = '-' add(a, b);
+		'-'a, b = 
+		
+		
+a    214  214  204   01  05  01   91   90
+b   -546  199  199   90  91  00   85   85
+		---  ---  ---  --- --- ---  ---  ---
+	 -332   85   95  -89 -84  01   06   05
