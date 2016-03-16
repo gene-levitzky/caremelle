@@ -1,0 +1,27 @@
+"is a greater than b?"
+define gt:
+
+		define main:
+				define naiveGt:
+						0, b - 'false'; "this takes care of equal case as well"
+						a, 0 = 'true';
+						a, b = naiveGt(dec(a), dec(b)).
+						
+				" if we see a decimal point "
+				firstDigitGt, '\.', '\.', {'.'}:aF $a, {'.'}:bF $b = main(firstDigitGt, aF, bF, a, b);
+				firstDigitGt, aF, '\.', $a, $b = 'true';
+				firstDigitGt, '\.', bF, $a, $b = 'false'
+				
+				" if we see a digit "
+				firstDigitGt, aFOld, bFOld, {'.'}:aF $a, {'.'}:bF $b = main(firstDigitGt, aF, bF, a, b);
+				firstDigitGt, aF, bF, '', '' = firstDigitGt;
+				firstDigitGt, aF, bF, a, '' = 'true';
+				firstDigitGt, aF, bF, '', b = 'false';
+				
+				" entry "
+				{'.'}:aF a, {'.'}:bF b = main(naiveGt(aF, bF), aF, bF, a, b).
+		
+		'-'a, '-'b = gt(b, a);
+		'-'a, b = 'false';
+		a, '-'b = 'true';
+		a, b = main(a, b).
