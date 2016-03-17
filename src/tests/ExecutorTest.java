@@ -2,6 +2,7 @@ package tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -623,5 +624,57 @@ public class ExecutorTest {
         assertEquals("false", executor.evaluateProgram(builder.build(
         		new FileReader("examples/Import1.rml"), 
         		new String[]{"test"})));
+	}
+	
+	@Test
+	public void testGt() 
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException, CannotImportFunctionException {
+		builder = new AremelleProgramBuilder();
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"10", "8"})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"10", "8.0"})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"10", "8"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"10", "88"})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"10", "8.9"})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"10", "08"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"-10", "-8"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"10", "10"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"10.0", "10"})));
+        try {
+        	assertEquals("true", executor.evaluateProgram(builder.build(
+            		new FileReader("rml/math/relations/gt.rml"), 
+            		new String[]{"NaN", "8"})));
+        	fail();
+        }
+        catch (NoMatchingSignatureException e) {}
+        try {
+        	assertEquals("true", executor.evaluateProgram(builder.build(
+            		new FileReader("rml/math/relations/gt.rml"), 
+            		new String[]{"8", ""})));
+        	fail();
+        }
+        catch (NoMatchingSignatureException e) {}
 	}
 }

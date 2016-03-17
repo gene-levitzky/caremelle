@@ -29,7 +29,7 @@ define subtract:
 						getLastCharacter(b)),
 				naiveSubtract(10, previous) space;
 				
-		bGa, a, b = 
+		bGa, a, b = subtract
 		
 		"entry point, integers"
 		'-'a, '-'b = '-' add(a, b);

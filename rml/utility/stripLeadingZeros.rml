@@ -1,0 +1,3 @@
+define stripLeadingZeros:
+		'0+' $n = '0' n;
+		$n = n.

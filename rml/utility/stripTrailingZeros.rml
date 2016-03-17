@@ -1,0 +1,4 @@
+define stripLeadingZeros:
+		{'[0-9]+'}:num {'[\.][0]+'}:zeros '0*' = num;
+		{'[0-9]+[\.][0-9]*?'}:num '0*' = num;
+		$n = n.

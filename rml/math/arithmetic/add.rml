@@ -13,10 +13,6 @@ define add:
         'c' space = '1' space;
         space = space.
         
-    define stripLeadingZeros:
-    	'0+' $n = '0' n;
-    	$n = n.
-        
     define naiveAdd:
         a, 0 = a;
         a, b = naiveAdd(inc(a), dec(b)).
