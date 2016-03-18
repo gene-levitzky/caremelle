@@ -662,6 +662,30 @@ public class ExecutorTest {
         assertEquals("false", executor.evaluateProgram(builder.build(
         		new FileReader("rml/math/relations/gt.rml"), 
         		new String[]{"10.0", "10"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"100.230001", "200.23"})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"0.00012", "0.000000000012"})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"0.000000000013", "0.000000000012"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"0.0000000000013", "0.000000000012"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"0.000000000012", "0.000000000012"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"0.000000000000", "0.000000000000"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"-0.000000000000", "0.000000000000"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader("rml/math/relations/gt.rml"), 
+        		new String[]{"0.000000000000", "-0.000000000000"})));
         try {
         	assertEquals("true", executor.evaluateProgram(builder.build(
             		new FileReader("rml/math/relations/gt.rml"), 

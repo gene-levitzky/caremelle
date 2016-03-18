@@ -1,4 +1,5 @@
-define stripLeadingZeros:
-		{'[0-9]+'}:num {'[\.][0]+'}:zeros '0*' = num;
+define stripTrailingZeros:
+		'0+' = 0;
+		{'[0-9]+'}:num {'[\.][0]+'}:zeros = num;
 		{'[0-9]+[\.][0-9]*?'}:num '0*' = num;
 		$n = n.
