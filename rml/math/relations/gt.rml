@@ -4,53 +4,64 @@ import 'rml/utility'.
 define gt:
 
     define naiveGt:
-		    0, b | 0, 0 = 'false'; "this takes care of equal case as well"
+        9, '[0-8]' | 
+        8, '[0-7]' | 
+        7, '[0-6]' | 
+        6, '[0-5]' |
+        5, '[0-4]' |
+        4, '[0-3]' |
+        3, '[0-2]' |
+        2, '[0-1]' |
+        1, 0 = 'true';
+        a, b = 'false'.
+
+    define mainLessThanUnity:				
+        same, same, '', b = 'false';
+        same, same, a, '' = 'true';
+        same, same, {'.'}:aF $a, {'.'}:bF $b = mainLessThanUnity(aF, bF, a, b);
+        aFOld, bFOld, $a, $b = naiveGt(aFOld, bFOld);
+            
+        " entry "
+        0, 0 | 0, b = 'false';
         a, 0 = 'true';
-        a, b = naiveGt(dec(a), dec(b)).
+        {'.'}:aF $a, {'.'}:bF $b = mainLessThanUnity(aF, bF, a, b).
 
-		define mainLessThanUnity:				
-			  aF, aF, '', b = 'false';
-				aF, aF, a, '' = 'true';
-				same, same, {'.'}:aF $a, {'.'}:bF $b = mainLessThanUnity(aF, bF, a, b);
-				aFOld, bFOld, $a, $b = naiveGt(aFOld, bFOld);
-				
-				" entry "
-				0, 0 | 0, b = 'false';
-				a, 0 = 'true';
-				{'.'}:aF $a, {'.'}:bF $b = mainLessThanUnity(aF, bF, a, b).
+    define main:
+        " if we see a digit "
+        firstDigitGt, aFOld, bFOld, {'.'}:aF $a, {'.'}:bF $b = main(firstDigitGt, aF, bF, a, b);
+        firstDigitGt, aF, bF, '', '' = firstDigitGt;
+        firstDigitGt, aF, bF, a, '' = 'true';
+        firstDigitGt, aF, bF, '', b = 'false';
 
-		define main:
-						
-				" if we see a decimal point "
-				'true', '\.', '\.', {'.'}:aF $a, {'.'}:bF $b = 'true';
-				'false', '\.', '\.', {'.'}:aF $a, {'.'}:bF $b = mainLessThanUnity(aF, bF, a, b);
-				firstDigitGt, aF, '\.', $a, $b = 'true';
-				firstDigitGt, '\.', bF, $a, $b = 'false';
-				
-				" if we see a digit "
-				firstDigitGt, aFOld, bFOld, {'.'}:aF $a, {'.'}:bF $b = main(firstDigitGt, aF, bF, a, b);
-				firstDigitGt, aF, bF, '', '' = firstDigitGt;
-				firstDigitGt, aF, bF, a, '' = 'true';
-				firstDigitGt, aF, bF, '', b = 'false';
-				
-				" entry "
-				{'.'}:aF $a, {'.'}:bF $b = main(naiveGt(aF, bF), aF, bF, a, b).
-		
-		" handles any zero-zero comparison "
-		'-?0+(\.0+)?', '-?0+(\.0+)?' = 'false';
-		
-		" handles anything with signs "
-		'-'{'[0-9]+(\.[0-9]+)?'}:a, '-'{'[0-9]+(\.[0-9]+)?'}:b = gt(b, a);
-		'-'{'[0-9]+(\.[0-9]+)?'}:a, {'[0-9]+(\.[0-9]+)?'}:b = 'false';
-		{'[0-9]+(\.[0-9]+)?'}:a, '-'{'[0-9]+(\.[0-9]+)?'}:b = 'true';
-				
-		" comparing two decimals "
-		'0*' {'[0-9]+'}:aWhole '\.' {'[0-9]+'}:aPart '0*', '0*' {'[0-9]+'}:bWhole '\.' {'[0-9]+'}:bPart '0*' = 
-				gt(gt(aWhole, bWhole), equals(aWhole, bWhole), mainLessThanUnity(aPart, bPart));
-		
-		'true', any, any = 'true';
-		'false', 'true', any = any;
-		'false', 'false', any = 'false';
-		
-		'0*' {'[0-9]+(\.[0-9]+)?'}:a, '0*' {'[0-9]+(\.[0-9]+)?'}:b = main(
-				stripTrailingZeros(a), stripTrailingZeros(b)).
+        " entry "
+        {'.'}:aF $a, {'.'}:bF $b = main(naiveGt(aF, bF), aF, bF, a, b).
+
+            
+    " handles any zero-zero comparison "
+    '-?0+(\.0+)?', '-?0+(\.0+)?' = 'false';
+
+    " handles anything with signs "
+    '-'{'[0-9]+(\.[0-9]+)?'}:a, '-'{'[0-9]+(\.[0-9]+)?'}:b = gt(b, a);
+    '-'{'[0-9]+(\.[0-9]+)?'}:a, {'[0-9]+(\.[0-9]+)?'}:b = 'false';
+    {'[0-9]+(\.[0-9]+)?'}:a, '-'{'[0-9]+(\.[0-9]+)?'}:b = 'true';
+            
+    " comparing two decimals "
+    '0*' {'[0-9]+'}:aWhole '\.' {'[0-9]+'}:aPart '0*', '0*' {'[0-9]+'}:bWhole '\.' {'[0-9]+'}:bPart '0*' = 
+            gt(gt(aWhole, bWhole), equals(aWhole, bWhole), mainLessThanUnity(aPart, bPart));
+            
+     " a decimal b integer"
+    '0*' {'[0-9]+'}:aWhole '\.' {'[0-9]+'}:aPart '0*', '0*' {'[0-9]+'}:bWhole '0*' = 
+            gt(gt(aWhole, bWhole), equals(aWhole, bWhole), mainLessThanUnity(aPart, 0));
+            
+    " a integer b decimal"
+    '0*' {'[0-9]+'}:aWhole '0*', '0*' {'[0-9]+'}:bWhole '\.' {'[0-9]+'}:bPart '0*' = 
+            gt(gt(aWhole, bWhole), equals(aWhole, bWhole), 'false');
+            
+    " both integers "
+    '0*' {'[0-9]+'}:aWhole '0*', '0*' {'[0-9]+'}:bWhole '0*' = main(aWhole, bWhole);
+
+    " given a.c b.d "
+    " a > b ? , a == b ? , c > d ?"
+    'true', any, any = 'true';
+    'false', 'true', any = any;
+    'false', 'false', any = 'false'.

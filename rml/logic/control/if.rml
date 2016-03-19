@@ -1,0 +1,4 @@
+define if:
+    'true', caseTrue, $caseFalse = caseTrue();
+		'true', '', $caseFalse | 'false', $caseTrue, '' = '';
+		'false', $caseTrue, caseFalse = caseFalse();

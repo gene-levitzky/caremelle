@@ -1,0 +1,25 @@
+define numEquals:
+    define main:
+		    a, a, b, b = 'true';
+				a, b, c, d = 'false'.
+				
+		" handles any zero-zero comparison "
+    '-?0+(\.0+)?', '-?0+(\.0+)?' = 'true';
+				
+    " comparing two decimals "
+    {'-?'}:s '0*' {'[0-9]+'}:aWhole '\.' {'[0-9]+'}:aPart '0*', {'-?'}:s '0*' {'[0-9]+'}:bWhole '\.' {'[0-9]+'}:bPart '0*' = 
+            main(aWhole, bWhole, aPart, bPart);
+            
+     " a decimal b integer"
+    {'-?'}:s '0*' {'[0-9]+'}:aWhole '\.' {'[0-9]+'}:aPart '0*', {'-?'}:s '0*' {'[0-9]+'}:bWhole '0*' = 
+        main(aWhole, bWhole, aPart, 0);
+            
+    " a integer b decimal"
+    {'-?'}:s '0*' {'[0-9]+'}:aWhole '0*', {'-?'}:s '0*' {'[0-9]+'}:bWhole '\.' {'[0-9]+'}:bPart '0*' = 
+        main(aWhole, bWhole, 0, bPart);
+            
+    " both integers "
+    {'-?'}:s '0*' {'[0-9]+'}:aWhole '0*', {'-?'}:s '0*' {'[0-9]+'}:bWhole '0*' = 
+		    main(aWhole, bWhole, 0, 0);
+		
+		'-?0*[0-9]+(\.[0-9]+)?0*', '-?0*[0-9]+(\.[0-9]+)?0*' = 'false'.

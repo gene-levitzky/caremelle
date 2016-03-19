@@ -122,6 +122,10 @@ public class AremelleProgramBuilder {
 			AremelleLexer lexer = getLexer(new FileReader(file));
 			ProgramContext importedProgram = getProgramContext(lexer);
 			Function importedFunction = constructFunction(importedProgram.function());
+			Function[] nestedImportedFunctions = getImportedFunctions(importedProgram);
+			for (Function f : nestedImportedFunctions) {
+				importedFunction.getScope().addFunction(f);
+			}
 			functions.add(importedFunction);
 		}
 		else if (file.isDirectory()){

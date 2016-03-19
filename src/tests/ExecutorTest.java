@@ -701,4 +701,81 @@ public class ExecutorTest {
         }
         catch (NoMatchingSignatureException e) {}
 	}
+	
+	@Test
+	public void testLt() 
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException, CannotImportFunctionException {
+		builder = new AremelleProgramBuilder();
+		String filepath = "rml/math/relations/lt.rml";
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"10", "8"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"10", "8.0"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"10", "8"})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"10", "88"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"10", "8.9"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"10", "08"})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"-10", "-8"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"10", "10"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"10.0", "10"})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"100.230001", "200.23"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"0.00012", "0.000000000012"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"0.000000000013", "0.000000000012"})));
+        assertEquals("true", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"0.0000000000013", "0.000000000012"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"0.000000000012", "0.000000000012"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"0.000000000000", "0.000000000000"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"-0.000000000000", "0.000000000000"})));
+        assertEquals("false", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"0.000000000000", "-0.000000000000"})));
+        try {
+        	assertEquals("true", executor.evaluateProgram(builder.build(
+            		new FileReader(filepath), 
+            		new String[]{"NaN", "8"})));
+        	fail();
+        }
+        catch (NoMatchingSignatureException e) {}
+        try {
+        	assertEquals("true", executor.evaluateProgram(builder.build(
+            		new FileReader(filepath), 
+            		new String[]{"8", ""})));
+        	fail();
+        }
+        catch (NoMatchingSignatureException e) {}
+	}
 }

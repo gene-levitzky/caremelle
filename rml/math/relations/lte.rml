@@ -1,0 +1,10 @@
+import 'rml/logic/operations/or.rml'.
+import 'rml/logic/operations/not.rml'.
+import 'rml/math/relations/gt.rml'.
+import 'rml/math/relations/numEquals.rml'.
+
+" a < b ? "
+define lt:
+    {'-?[0-9]+([\.][0-9]+)?'}:a, {'-?[0-9]+([\.][0-9]+)?'}:b = or(
+        not(gt(a, b)),
+        numEquals(a, b)).

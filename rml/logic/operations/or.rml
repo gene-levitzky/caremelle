@@ -1,0 +1,5 @@
+define or:
+    'true', 'false' | 'false', 'true' | 'true', 'true' = 'true';
+		'false', 'false' = 'false;
+		1, 0 | 0, 1 | 1, 1 = 1;
+		0, 0 = 0.
