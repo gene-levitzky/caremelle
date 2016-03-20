@@ -4,7 +4,7 @@ define numEquals:
 				a, b, c, d = 'false'.
 				
 		" handles any zero-zero comparison "
-    '-?0+(\.0+)?', '-?0+(\.0+)?' = 'true';
+    '-?0*(\.0+)?', '-?0*(\.0+)?' = 'true';
 				
     " comparing two decimals "
     {'-?'}:s '0*' {'[0-9]+'}:aWhole '\.' {'[0-9]+'}:aPart '0*', {'-?'}:s '0*' {'[0-9]+'}:bWhole '\.' {'[0-9]+'}:bPart '0*' = 

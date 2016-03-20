@@ -778,4 +778,29 @@ public class ExecutorTest {
         }
         catch (NoMatchingSignatureException e) {}
 	}
+	
+	@Test
+	public void testFunctionAsArgument() 
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException, CannotImportFunctionException {
+		builder = new AremelleProgramBuilder();
+		String filepath = "examples/FunctionAsArgument.rml";
+        assertEquals("22", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"add", "15", "7"})));
+        assertEquals("22", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"'add'", "15", "7"})));
+        try {
+        	assertEquals("22", executor.evaluateProgram(builder.build(
+            		new FileReader(filepath), 
+            		new String[]{"add", "1j5", "14"})));
+        	fail();
+        }
+        catch (NotANumberException e) {}
+	}
 }

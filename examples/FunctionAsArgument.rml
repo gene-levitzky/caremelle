@@ -1,0 +1,4 @@
+import 'rml/math/arithmetic/add.rml'.
+
+define test:
+		f, arg1, arg2 = f(arg1, arg2).

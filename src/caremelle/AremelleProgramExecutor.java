@@ -173,6 +173,9 @@ public class AremelleProgramExecutor {
 						if (functionName == null) {
 							throw new UndefinedVariableException(aefc.getName());
 						}
+						if (functionName.startsWith("'") && functionName.endsWith("'")) {
+							functionName = functionName.substring(1, functionName.length() - 1);
+						}
 						calledFunction = callingFunction.getScope().getFunction(functionName);
 						if (calledFunction == null) {
 							throw new UndefinedVariableException(functionName);
