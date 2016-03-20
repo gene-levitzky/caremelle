@@ -44,54 +44,54 @@ import aremelle.RewriteRule;
  *
  */
 public class AremelleProgramBuilder {
-	
+
 	public AremelleProgramBuilder(){}
-	
+
 	public Program build(File file, String[] args) 
 			throws FileNotFoundException, 
 			CannotImportFunctionException, 
 			IOException {
 		return parse(getLexer(new FileReader(file)), args);
 	}
-	
+
 	public Program build(FileReader fileReader, String[] args) 
 			throws CannotImportFunctionException, IOException {
 		return parse(getLexer(fileReader), args);
 	}
-	
+
 	public Program build(String code, String[] args) 
 			throws CannotImportFunctionException, IOException {
 		return parse(getLexer(code), args);
 	}
-	
+
 	private Program parse(AremelleLexer lexer, String[] args)
 			throws CannotImportFunctionException {
-        return constructProgram(getProgramContext(lexer), args);
+		return constructProgram(getProgramContext(lexer), args);
 	}
-	
+
 	private ProgramContext getProgramContext(AremelleLexer lexer) {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-        AremelleParser parser = new AremelleParser(tokens);
-        return parser.program();
+		AremelleParser parser = new AremelleParser(tokens);
+		return parser.program();
 	}
-	
+
 	private AremelleLexer getLexer(FileReader reader) throws IOException {
 		return new AremelleLexer(new ANTLRInputStream(reader));
 	}
-	
+
 	private AremelleLexer getLexer(String code) throws IOException {
 		return new AremelleLexer(new ANTLRInputStream(code));
 	}
-	
+
 	public Program constructProgram(ProgramContext pc, String[] args) 
 			throws CannotImportFunctionException {
-		
+
 		Function mainFunction = constructFunction(pc.function());
 		Function[] imports = getImportedFunctions(pc);
-		
-    	return new Program(mainFunction, imports, args);
-    }
-	
+
+		return new Program(mainFunction, imports, args);
+	}
+
 	private Function[] getImportedFunctions(ProgramContext pc) 
 			throws CannotImportFunctionException {
 		List<Function> importList = new ArrayList<Function>();
@@ -112,7 +112,7 @@ public class AremelleProgramBuilder {
 		}
 		return importedArray;
 	}
-	
+
 	private void getImportedFunctions(File file, List<Function> functions) 
 			throws FileNotFoundException, IOException, CannotImportFunctionException {
 		if (!file.exists()) {
@@ -135,24 +135,24 @@ public class AremelleProgramBuilder {
 			}
 		}
 	}
-    
-    private Function constructFunction(FunctionContext functionContext) {
-    	FunctionBodyContext fbc = functionContext.functionBody();
-    	Function[] nestedFunctions = new Function[fbc.function().size()];
-    	for (int i = 0; i < nestedFunctions.length; i++) {
-    		nestedFunctions[i] = constructFunction(fbc.function(i));
-    	}
-    	int numRules = fbc.rewriteRules() == null ? 0 : fbc.rewriteRules().rewriteRule().size();
-    	RewriteRule[] rules = new RewriteRule[numRules];
-    	for (int i = 0; i < rules.length; i++) {
-    		rules[i] = constructRewriteRule(fbc.rewriteRules().rewriteRule(i));
-    	}
-    	Expression expression = fbc.expression() != null ? constructExpression(fbc.expression()) : null;
-    	String functionName = functionContext.Identifier().getText();
-    	return new Function(functionName, nestedFunctions, expression, rules);
-    }
-    
-    private RewriteRule constructRewriteRule(RewriteRuleContext sc) {
+
+	private Function constructFunction(FunctionContext functionContext) {
+		FunctionBodyContext fbc = functionContext.functionBody();
+		Function[] nestedFunctions = new Function[fbc.function().size()];
+		for (int i = 0; i < nestedFunctions.length; i++) {
+			nestedFunctions[i] = constructFunction(fbc.function(i));
+		}
+		int numRules = fbc.rewriteRules() == null ? 0 : fbc.rewriteRules().rewriteRule().size();
+		RewriteRule[] rules = new RewriteRule[numRules];
+		for (int i = 0; i < rules.length; i++) {
+			rules[i] = constructRewriteRule(fbc.rewriteRules().rewriteRule(i));
+		}
+		Expression expression = fbc.expression() != null ? constructExpression(fbc.expression()) : null;
+		String functionName = functionContext.Identifier().getText();
+		return new Function(functionName, nestedFunctions, expression, rules);
+	}
+
+	private RewriteRule constructRewriteRule(RewriteRuleContext sc) {
 		Expression expression = constructExpression(sc.expression());
 		Signature[] signatures = new Signature[sc.signatures().signature().size()];
 		for (int i = 0; i < signatures.length; i++) {
@@ -163,51 +163,45 @@ public class AremelleProgramBuilder {
 			}
 			signatures[i] = new Signature(patterns);
 		}
-    	return new RewriteRule(signatures, expression);
+		return new RewriteRule(signatures, expression);
 	}
-    
-    private Pattern constructPattern(PatternContext pc) {
-    	Parameter[] parameters = new Parameter[pc.parameter().size()];
-    	for (int i = 0; i < parameters.length; i++) {
-    		ParameterContext apc = pc.parameter(i);
-    		String name = apc.IdentifierParameter() == null ? 
-    				null : apc.IdentifierParameter().getText();
-    		name = name != null ? name :
-    				apc.Identifier() != null ? apc.Identifier().getText() : null; 
-    		String regexp = null;
-    		if (apc.regexp() != null) {
-	    		regexp = apc.regexp().atomicRegexp().getText();
-	    		// Strip quotes
-	    		if (regexp != null) {
-	    			try {
-	    				regexp = String.valueOf(Integer.parseInt(regexp));
-	    			}
-	    			catch (NumberFormatException npe) {
-	    				try {
-	    					regexp = String.valueOf(Double.parseDouble(regexp));
-	    				}
-	    				catch (NumberFormatException npe2) {
-	    					regexp = regexp.substring(1, regexp.length() - 1);
-	    				}
-	    			}
-	    		}
-	    		name = apc.regexp().Identifier() == null ? 
-	    				name : apc.regexp().Identifier().getText();
-    		}
-    		parameters[i] = new Parameter(name, regexp);
-    	}
-    	return new Pattern(parameters);
-    }
+
+	private Pattern constructPattern(PatternContext pc) {
+		Parameter[] parameters = new Parameter[pc.parameter().size()];
+		for (int i = 0; i < parameters.length; i++) {
+
+			ParameterContext apc = pc.parameter(i);
+			String name = null, regexp = null;
+			if (apc.IdentifierParameter() != null) {
+				name = apc.IdentifierParameter().getText();
+			}
+			else if (apc.Identifier() != null) {
+				name = apc.Identifier().getText();
+			}
+			else if (apc.regexp() != null) {
+				name = apc.regexp().Identifier() != null ? apc.regexp().Identifier().getText() : null;
+				if (apc.regexp().atomicRegexp().String() != null) {
+					regexp = apc.regexp().atomicRegexp().String().getText();
+					regexp = regexp.substring(1, regexp.length() - 1);
+				}
+				else if (apc.regexp().atomicRegexp().Number() != null) {
+					regexp = apc.regexp().atomicRegexp().Number().getText();
+				}
+			}
+			parameters[i] = new Parameter(name, regexp);
+		}
+		return new Pattern(parameters);
+	}
 
 	private Expression constructExpression(ExpressionContext expressionContext) {
 		int size = expressionContext.atomicExpression().size();
-    	AtomicExpression[] atomicExpressions = new AtomicExpression[size];
-    	for (int i = 0; i < size; i++) {
-    		atomicExpressions[i] = constructAtomicExpression(expressionContext.atomicExpression(i));
-    	}
-    	return new Expression(atomicExpressions);
-    }
-	
+		AtomicExpression[] atomicExpressions = new AtomicExpression[size];
+		for (int i = 0; i < size; i++) {
+			atomicExpressions[i] = constructAtomicExpression(expressionContext.atomicExpression(i));
+		}
+		return new Expression(atomicExpressions);
+	}
+
 	private AtomicExpression constructAtomicExpression(AtomicExpressionContext aec) {
 		if (aec.String() != null) {
 			String string = aec.String().getText();
