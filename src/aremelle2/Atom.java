@@ -2,8 +2,12 @@ package aremelle2;
 
 public class Atom extends Token {
 
-	public Atom(int lineNumber, int columnNumber) {
+	public Atom(String identifier, int lineNumber, int columnNumber) {
 		super(lineNumber, columnNumber);
+	}
+	
+	public String getIdentifier() {
+		return null;
 	}
 
 	public boolean isLiteral() {
@@ -24,6 +28,11 @@ public class Atom extends Token {
 	public boolean isExpression() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public int getNumberOfCaptureGroups() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

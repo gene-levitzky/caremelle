@@ -1,10 +1,14 @@
 package caremelle2.execution;
 
+import java.util.Map;
+
+import caremelle2.exceptions.NoMatchingSignatureException;
 import caremelle2.exceptions.ResultAccessedBeforeResolvedException;
 import aremelle2.Argument;
 import aremelle2.Expression;
 import aremelle2.Function;
 import aremelle2.Atom;
+import aremelle2.Parameter;
 import aremelle2.Pattern;
 import aremelle2.RewriteRule;
 import aremelle2.Signature;
@@ -16,7 +20,8 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 	private final Function callingFunction;
 	private final Function calledFunction;
 	private final Argument[] arguments;
-	private final Expression expression;
+	
+	private Map<String, Parameter> parameterMap;
 	
 	private int argumentIndex;
 	private int rewriteRuleIndex;
@@ -26,26 +31,28 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 	
 	private StringBuilder currentRegexp;
 	
+	private boolean isDone;
+	
 	public ExecutionContextFunctionCall(
 			Function callingFunction, 
 			Function calledFunction, 
-			Argument[] arguments, 
-			Expression expression
+			Argument[] arguments
 			) {
 		this.callingFunction = callingFunction;
 		this.calledFunction = calledFunction;
 		this.arguments = arguments;
-		this.expression = expression;
 		
 		argumentIndex = 0;
 		rewriteRuleIndex = 0;
 		signatureIndex = 0;
 		patternIndex = 0;
 		atomIndex = 0;
+		
+		isDone = false;
 	}
 
 	public boolean isDone() {
-		return false;
+		return isDone;
 	}
 	
 	public ExecutionContextResult getResult() throws ResultAccessedBeforeResolvedException {
@@ -71,22 +78,69 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 		throw new ResultAccessedBeforeResolvedException(msg);
 	}
 	
-	public ExecutionContext execute(ExecutionContextResult previousResult) throws Exception {
+	public ExecutionContext execute(ExecutionContextResult previousResult) 
+			throws Exception, 
+			NoMatchingSignatureException {
+		
+		if (calledFunction.getExpression() != null) {
+			if (previousResult == null) {
+				return new ExecutionContextExpression();				
+			}
+			else {
+				result = previousResult;
+				isDone = true;
+				return null;
+			}
+		}
+		
 		if (argumentIndex < arguments.length) {
-			// TODO return new ExecutionContextArgument();
+			if (previousResult == null) {
+				return new ExecutionContextArgument();
+			}
+			else {
+				argumentIndex++;
+				return null;
+			}
 		}
 		else if (rewriteRuleIndex < calledFunction.size()) {
 			RewriteRule rewriteRule = calledFunction.get(rewriteRuleIndex);
-			if (signatureIndex < rewriteRule.size()) {
+			if (signatureIndex == rewriteRule.size()) {						
+				throw new NoMatchingSignatureException(
+						calledFunction.getIdentifier(),
+						calledFunction.getLineNumber(),
+						calledFunction.getColumnNumber(),
+						arguments);
+			}
+			else {
 				Signature signature = rewriteRule.get(signatureIndex);
+				currentRegexp = new StringBuilder("^");
 				if (patternIndex == signature.size()) {
-					
+					// TODO we have a matching signature at signatureIndex
+					// use expression from called function
+					return new ExecutionContextExpression();
 				}
 				else {
 					Pattern pattern = signature.get(patternIndex);
 					if (atomIndex == pattern.size()) {
 						// The pattern is complete, it is stored in currentRegexp
+						currentRegexp.append("$");
+						Parameter[] parameters = ParameterFactory.buildParameters(
+								arguments[patternIndex], 
+								currentRegexp.toString(), 
+								pattern);
+						if (parameters != null) {
+							for (Parameter parameter : parameters) {
+								parameterMap.put(parameter.getIdentifier(), parameter);
+							}
+							patternIndex++;
+						}
+						else {
+							patternIndex = 0;
+							signatureIndex++;
+							parameterMap.clear();
+						}
 						
+						return null;
 					}
 					else {
 						Atom atom = pattern.get(atomIndex);
@@ -94,14 +148,16 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 								(atom.isLiteral() || atom.isFunction())) {
 							currentRegexp.append(atom.getRegexp());
 							atomIndex++;
+							return null;
 						}
 						else if (atom.isExpression()) {
 							if (previousResult != null) {
 								currentRegexp.append(previousResult.getStringValue());
 								atomIndex++;
+								return null;
 							}
 							else {
-								// TODO return new ExecutionContextExpression
+								return new ExecutionContextExpression();
 							}
 						}
 						else {
@@ -111,9 +167,11 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 					}
 				}
 			}
-			// TODO return new ExecutionContextArgument();
 		}
-		return null;
+		else {
+			// for testing purposes only
+			throw new Exception("Should never be here.");
+		}
 	}
 
 	@Override
