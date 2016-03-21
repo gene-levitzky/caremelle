@@ -12,10 +12,10 @@ import aremelle.Function;
 import aremelle.Parameter;
 import aremelle.Program;
 import aremelle.RewriteRule;
-import exceptions.NoMatchingSignatureException;
-import exceptions.NotANumberException;
-import exceptions.UndeclaredVariableException;
-import exceptions.UndefinedVariableException;
+import aremelle.exceptions.NoMatchingSignatureException;
+import aremelle.exceptions.NotANumberException;
+import aremelle.exceptions.UndeclaredVariableException;
+import aremelle.exceptions.UndefinedVariableException;
 
 public class AremelleProgramExecutor {
 
@@ -36,6 +36,11 @@ public class AremelleProgramExecutor {
 
 			ExecutionContext context = contextStack.pop();
 			Argument result = context.getResult();
+			
+			if (context.getExpression() != null &&
+					context.getAtomIndex() == context.getExpression().size()) {
+				context.setDone(true);
+			}
 
 			if (context.isDone()) {
 				// this expression has been fully evaluated
@@ -123,9 +128,6 @@ public class AremelleProgramExecutor {
 					String value = ((AtomicExpressionLiteral) atom).getValue();
 					context.appendResult(new Argument(value));
 					context.setAtomIndex(atomIndex + 1);
-					if (context.getAtomIndex() == context.getExpression().size()) {
-						context.setDone(true);
-					}
 					contextStack.push(context);
 					continue;
 				}
@@ -140,9 +142,6 @@ public class AremelleProgramExecutor {
 							if (value != null) {
 								context.appendResult(new Argument(value));
 								context.setAtomIndex(atomIndex + 1);
-								if (context.getAtomIndex() == context.getExpression().size()) {
-									context.setDone(true);
-								}
 								contextStack.push(context);
 								continue;
 							}
@@ -151,6 +150,12 @@ public class AremelleProgramExecutor {
 							}
 						}
 						else {
+							if (callingFunc.getScope().getFunction(atomId) != null) {
+								context.setResult(new Argument(atomId));
+								context.setAtomIndex(atomIndex + 1);
+								contextStack.push(context);
+								continue;
+							}
 							throw new UndeclaredVariableException(identifier.getName());
 						}
 					}

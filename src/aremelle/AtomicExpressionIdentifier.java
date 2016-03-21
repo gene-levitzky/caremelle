@@ -1,7 +1,7 @@
 package aremelle;
 
+import aremelle.exceptions.UndefinedVariableException;
 import share.NamedEntity;
-import exceptions.UndefinedVariableException;
 
 public class AtomicExpressionIdentifier extends NamedEntity implements AtomicExpression {
 	

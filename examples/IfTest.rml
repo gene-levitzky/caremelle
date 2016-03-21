@@ -1,0 +1,10 @@
+import 'rml/math/arithmetic/add.rml'.
+import 'rml/logic/control/if.rml'.
+
+define ifTest:
+		define trueFunc:
+				out('True Conditon Executed').
+		define falseFunc:
+				out('False Condition Executed').
+				
+		cond = if(cond, trueFunc, falseFunc).

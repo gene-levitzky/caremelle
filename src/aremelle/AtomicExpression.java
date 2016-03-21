@@ -1,8 +1,8 @@
 package aremelle;
 
-import exceptions.NoMatchingSignatureException;
-import exceptions.NotANumberException;
-import exceptions.UndefinedVariableException;
+import aremelle.exceptions.NoMatchingSignatureException;
+import aremelle.exceptions.NotANumberException;
+import aremelle.exceptions.UndefinedVariableException;
 
 public interface AtomicExpression {
 	

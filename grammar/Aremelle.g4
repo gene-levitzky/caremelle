@@ -56,11 +56,11 @@ signature
     ;
     
 pattern
-    :   parameter+
+    :   atom+
     ;
     
-parameter
-    :   IdentifierParameter | Identifier | regexp
+atom
+    :   IdentifierEmpty | Identifier | regexp
     ;
     
 regexp
@@ -169,7 +169,7 @@ Identifier
 		:		IdentifierFragment
 		;
 		
-IdentifierParameter
+IdentifierEmpty
 		:		DOLLAR IdentifierFragment
 		;
     

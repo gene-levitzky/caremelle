@@ -1,9 +1,9 @@
 package aremelle;
 
+import aremelle.exceptions.NoMatchingSignatureException;
+import aremelle.exceptions.NotANumberException;
+import aremelle.exceptions.UndefinedVariableException;
 import share.NamedEntity;
-import exceptions.NoMatchingSignatureException;
-import exceptions.NotANumberException;
-import exceptions.UndefinedVariableException;
 
 public class AtomicExpressionFunctionCall extends NamedEntity implements
 		AtomicExpression {

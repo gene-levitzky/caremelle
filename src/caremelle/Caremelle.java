@@ -3,11 +3,11 @@ package caremelle;
 import java.io.FileReader;
 import java.io.IOException;
 
-import exceptions.CannotImportFunctionException;
-import exceptions.NoMatchingSignatureException;
-import exceptions.NotANumberException;
-import exceptions.UndeclaredVariableException;
-import exceptions.UndefinedVariableException;
+import aremelle.exceptions.CannotImportFunctionException;
+import aremelle.exceptions.NoMatchingSignatureException;
+import aremelle.exceptions.NotANumberException;
+import aremelle.exceptions.UndeclaredVariableException;
+import aremelle.exceptions.UndefinedVariableException;
 
 public class Caremelle {
 	

@@ -9,11 +9,11 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import aremelle.Program;
-import exceptions.CannotImportFunctionException;
-import exceptions.NoMatchingSignatureException;
-import exceptions.NotANumberException;
-import exceptions.UndeclaredVariableException;
-import exceptions.UndefinedVariableException;
+import aremelle.exceptions.CannotImportFunctionException;
+import aremelle.exceptions.NoMatchingSignatureException;
+import aremelle.exceptions.NotANumberException;
+import aremelle.exceptions.UndeclaredVariableException;
+import aremelle.exceptions.UndefinedVariableException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -802,5 +802,23 @@ public class ExecutorTest {
         	fail();
         }
         catch (NotANumberException e) {}
+	}
+	
+	@Test
+	public void testIf() 
+			throws FileNotFoundException
+			, IOException
+			, UndefinedVariableException
+			, NoMatchingSignatureException
+			, NotANumberException
+			, UndeclaredVariableException, CannotImportFunctionException {
+		builder = new AremelleProgramBuilder();
+		String filepath = "examples/IfTest.rml";
+        assertEquals("True Condition Executed", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"true"})));
+        assertEquals("False Condition Executed", executor.evaluateProgram(builder.build(
+        		new FileReader(filepath), 
+        		new String[]{"false"})));
 	}
 }

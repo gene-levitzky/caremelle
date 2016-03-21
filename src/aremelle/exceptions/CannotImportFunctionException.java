@@ -1,4 +1,4 @@
-package exceptions;
+package aremelle.exceptions;
 
 public class CannotImportFunctionException extends Exception {
 

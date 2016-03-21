@@ -13,9 +13,9 @@ import aremelle.Function;
 import aremelle.Pattern;
 import aremelle.Signature;
 import aremelle.RewriteRule;
-import exceptions.NoMatchingSignatureException;
-import exceptions.NotANumberException;
-import exceptions.UndefinedVariableException;
+import aremelle.exceptions.NoMatchingSignatureException;
+import aremelle.exceptions.NotANumberException;
+import aremelle.exceptions.UndefinedVariableException;
 
 public class FunctionTests {
 	

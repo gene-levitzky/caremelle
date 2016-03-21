@@ -1,4 +1,4 @@
 define if:
-    'true', caseTrue, $caseFalse = caseTrue();
+    'true', caseTrue, $caseFalse = out('here') caseTrue();
 		'true', '', $caseFalse | 'false', $caseTrue, '' = '';
-		'false', $caseTrue, caseFalse = caseFalse();
+		'false', $caseTrue, caseFalse = caseFalse().

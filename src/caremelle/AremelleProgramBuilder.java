@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import exceptions.CannotImportFunctionException;
 import antlr.AremelleLexer;
 import antlr.AremelleParser;
 import antlr.AremelleParser.ArgumentsContext;
@@ -35,6 +34,7 @@ import aremelle.Pattern;
 import aremelle.Signature;
 import aremelle.Program;
 import aremelle.RewriteRule;
+import aremelle.exceptions.CannotImportFunctionException;
 
 /**
  * This class constructs Aremelle Program objects which may be passed to the
