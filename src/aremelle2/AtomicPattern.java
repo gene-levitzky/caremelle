@@ -1,8 +1,8 @@
 package aremelle2;
 
-public class Atom extends Token {
+public class AtomicPattern extends Token {
 
-	public Atom(String identifier, int lineNumber, int columnNumber) {
+	public AtomicPattern(String identifier, int lineNumber, int columnNumber) {
 		super(lineNumber, columnNumber);
 	}
 	

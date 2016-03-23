@@ -1,8 +1,8 @@
 package aremelle2;
 
-public class Pattern extends TokenList<Atom> {
+public class Pattern extends TokenList<AtomicPattern> {
 
-	public Pattern(Atom[] parameters, int lineNumber, int columnNumber) {
+	public Pattern(AtomicPattern[] parameters, int lineNumber, int columnNumber) {
 		super(lineNumber, columnNumber, parameters);
 	}
 

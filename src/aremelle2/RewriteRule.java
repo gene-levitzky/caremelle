@@ -9,4 +9,8 @@ public class RewriteRule extends TokenList<Signature> {
 		this.expression = expression;
 	}
 
+	public Expression getExpression() {
+		return expression;
+	}
+
 }

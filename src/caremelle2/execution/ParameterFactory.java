@@ -2,6 +2,8 @@ package caremelle2.execution;
 
 import static java.util.regex.Pattern.compile;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 import aremelle2.Argument;
@@ -34,9 +36,20 @@ public class ParameterFactory {
 			group += pattern.get(i).getNumberOfCaptureGroups();
 		}
 		
+		Map<String, Parameter> paramMap = new HashMap<String, Parameter>();
+		
 		// check to make sure that back-references match
 		for (Parameter p : parameters) {
-			// TODO 
+			Parameter put = paramMap.putIfAbsent(p.getIdentifier(), p);
+			if (put != null) {
+				if (put.getFunction() != null && p.getFunction() != null
+						&& !put.getFunction().getIdentifier().equals(p.getFunction().getIdentifier())) {
+					return null;
+				}
+				if (put.getValue() != null && p.getValue() != null && !put.getValue().equals(p.getValue())) {
+					return null;
+				}
+			}
 		}
 		
 		return parameters;

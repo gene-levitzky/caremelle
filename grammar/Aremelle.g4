@@ -56,10 +56,10 @@ signature
     ;
     
 pattern
-    :   atom+
+    :   atomicPattern+
     ;
     
-atom
+atomPattern
     :   IdentifierEmpty | Identifier | regexp
     ;
     
