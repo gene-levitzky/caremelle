@@ -59,13 +59,13 @@ pattern
     :   atomicPattern+
     ;
     
-atomPattern
+atomicPattern
     :   IdentifierEmpty | Identifier | regexp
     ;
     
 regexp
     :   atomicRegexp
-    |   LEFT_BRACE atomicRegexp RIGHT_BRACE (COLON Identifier)?
+    |   LEFT_BRACE expression RIGHT_BRACE (COLON Identifier)?
     ;
     
 atomicRegexp

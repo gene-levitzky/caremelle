@@ -1,37 +1,49 @@
 package caremelle2.execution;
 
+import aremelle2.AtomicExpression;
+import aremelle2.Expression;
+import aremelle2.Function;
 import caremelle2.exceptions.CaremelleBaseException;
-import caremelle2.exceptions.NextExecutionContextAccessedBeforeResolvedException;
 import caremelle2.exceptions.NoMatchingSignatureException;
-import caremelle2.exceptions.ResultAccessedBeforeResolvedException;
 
 public class ExecutionContextExpression extends ExecutionContext {
+	
+	private final Expression expression;
+	private final Function parentFunction;
+	
+	private int atomicExpressionIndex;
+	
+	private final StringBuilder resultBuilder;
 
-	@Override
-	public ExecutionContextFunctionCall toFunctionCall() {
-		// TODO Auto-generated method stub
-		return null;
+	public ExecutionContextExpression(Expression expression, Function parentFunction) {
+		this.expression = expression;
+		this.parentFunction = parentFunction;
+		this.atomicExpressionIndex = 0;
+		this.resultBuilder = new StringBuilder();
 	}
 
 	@Override
-	public void executeStep(ExecutionContextResult previousResult)
+	public void executeStepDelegate(ExecutionContextResult previousResult)
 			throws NoMatchingSignatureException, CaremelleBaseException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public ExecutionContextResult getResult()
-			throws ResultAccessedBeforeResolvedException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ExecutionContext getNextExecutionContext()
-			throws NextExecutionContextAccessedBeforeResolvedException {
-		// TODO Auto-generated method stub
-		return null;
+		if (atomicExpressionIndex == expression.size()) {
+			ExecutionContextResult result = new ExecutionContextResult(resultBuilder.toString());
+			setResult(result);
+		}
+		else {
+			if (previousResult != null) {
+				resultBuilder.append(previousResult.getStringValue());
+				atomicExpressionIndex++;
+			}
+			else {
+				AtomicExpression atom = expression.get(atomicExpressionIndex);
+				if (atom.isLiteral()) {
+					resultBuilder.append(atom.getLiteralValue());
+				}
+				else if (atom.isIdentifier()) {
+					getResources().getIdentifierValue(atom.getIdentifier(), parentFunction);
+				}
+			}
+		}
 	}
 
 }

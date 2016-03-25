@@ -2,26 +2,25 @@ package aremelle2;
 
 public class Argument {
 	
-	public String toString() {
-		if (getFunction() != null) {
-			return getFunction().getIdentifier();
-		}
-		return getLiteral();
+	private final Function function;
+	private final Expression expression;
+	
+	public Argument(Function function) {
+		this.function = function;
+		this.expression = null;
 	}
-
+	
+	public Argument(Expression expression) {
+		this.expression = expression;
+		this.function = null;
+	}
+	
 	public Function getFunction() {
-		return null;
+		return function;
 	}
 	
-	public String getLiteral() {
-		return null;
-	}
-	
-	public String getLiteralValue() {
-		if (getLiteral().startsWith("'") && getLiteral().endsWith("'")) {
-			return getLiteral().substring(1, getLiteral().length() - 1);
-		}
-		return getLiteral();
+	public Expression getExpression() {
+		return expression;
 	}
 
 }

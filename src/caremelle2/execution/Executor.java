@@ -51,13 +51,17 @@ public class Executor {
 				case DONE:
 					result = context.getResult();
 					break;
-				case WAITING:
+				case NEXT_CONTEXT_READY:
 					ExecutionContext nextContext = context.getNextExecutionContext();
 					contextStack.push(context);
 					contextStack.push(nextContext);
 					break;
 				case INITIAL:
 				case RUNNING:
+					context.executeStep(null);
+					contextStack.push(context);
+					break;
+				case WAITING:
 					context.executeStep(result);
 					contextStack.push(context);
 					result = null;

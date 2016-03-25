@@ -6,16 +6,15 @@ public class AtomicPattern extends Token {
 		super(lineNumber, columnNumber);
 	}
 	
+	public Expression getExpression() {
+		return null;
+	}
+	
 	public String getIdentifier() {
 		return null;
 	}
 
 	public boolean isLiteral() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean isFunction() {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -26,8 +25,7 @@ public class AtomicPattern extends Token {
 	}
 
 	public boolean isExpression() {
-		// TODO Auto-generated method stub
-		return false;
+		return getExpression() != null;
 	}
 
 	public int getNumberOfCaptureGroups() {

@@ -2,17 +2,10 @@ package caremelle2.execution;
 
 import java.util.Map;
 
-import caremelle2.exceptions.CannotProceedBeforeResultException;
 import caremelle2.exceptions.CaremelleBaseException;
-import caremelle2.exceptions.ExecutionContextDoneException;
-import caremelle2.exceptions.ExecutionContextErrorException;
-import caremelle2.exceptions.ExecutionContextNextContextReadyException;
-import caremelle2.exceptions.NextExecutionContextAccessedBeforeResolvedException;
 import caremelle2.exceptions.NoMatchingSignatureException;
-import caremelle2.exceptions.ResultAccessedBeforeResolvedException;
 import aremelle2.Argument;
 import aremelle2.AtomicExpressionFunctionCall;
-import aremelle2.Expression;
 import aremelle2.Function;
 import aremelle2.AtomicPattern;
 import aremelle2.Parameter;
@@ -21,10 +14,6 @@ import aremelle2.RewriteRule;
 import aremelle2.Signature;
 
 public class ExecutionContextFunctionCall extends ExecutionContext {
-	
-	private ExecutionContextResult result;
-	
-	private ExecutionContext nextContext;
 	
 	private final Function callingFunction;
 	private final Function calledFunction;
@@ -56,11 +45,7 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 	}
 	
 	@Override
-	public ExecutionContextResult getResult() throws ResultAccessedBeforeResolvedException {
-		if (getState() == ExecutionState.DONE) {
-			return result;
-		}
-		
+	public String getResultAccesssedBeforeResolvedError() {		
 		String problem = null;
 		if (argumentIndex < arguments.length) {
 			problem = String.format("%d of %d arguments processed", argumentIndex, arguments.length);
@@ -71,55 +56,30 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 		else {
 			problem = "All arguments processed and all rewrite rules considered. This should never happen";
 		}
-		String msg = String.format(
+		return String.format(
 				"Result of function %s, called by %s, has not yet been resolved; %d.", 
 				calledFunction.getIdentifier(),
 				callingFunction.getIdentifier(),
 				problem);
-		throw new ResultAccessedBeforeResolvedException(msg);
 	}
 	
 	
 	@Override
-	public void executeStep(ExecutionContextResult previousResult) 
+	public void executeStepDelegate(ExecutionContextResult previousResult) 
 			throws NoMatchingSignatureException, CaremelleBaseException {
-		
-		switch(getState()) {
-			case INITIAL:
-				setState(ExecutionState.RUNNING);
-				break;
-			case WAITING:
-				if (previousResult != null) {
-					setState(ExecutionState.RUNNING);
-					break;
-				}
-				else {
-					throw new CannotProceedBeforeResultException(
-							"Execution invoked while this context is waiting for result.");
-				}
-			case NEXT_CONTEXT_READY:
-				throw new ExecutionContextNextContextReadyException(
-						"Execution invoked while this context has the next context ready");
-			case ERROR:
-				throw new ExecutionContextErrorException("Execution Context is in ERROR state.");
-			case DONE:
-				throw new ExecutionContextDoneException("This Execution Context has finished executing.");
-			default:
-				break;				
-		}
 		
 		if (calledFunction.getExpression() != null) {
 			if (previousResult == null) {
-				setNextContext(new ExecutionContextExpression());
+				setNextContext(new ExecutionContextExpression(calledFunction.getExpression(), calledFunction));
 			}
 			else {
-				result = previousResult;
-				setState(ExecutionState.DONE);
+				setResult(previousResult);
 			}
 		}
 		else if (argumentIndex < arguments.length) {
 			if (previousResult == null) {
-				setNextContext(new ExecutionContextArgument());
+				Argument arg = arguments[argumentIndex];
+				setNextContext(new ExecutionContextArgument(arg, callingFunction));
 			}
 			else {
 				argumentIndex++;
@@ -141,9 +101,9 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 					currentRegexp = new StringBuilder("^");
 				}
 				else if (patternIndex == signature.size()) {
-					// TODO we have a matching signature at signatureIndex
-					// use expression from called function
-					setNextContext(new ExecutionContextExpression());
+					// We have a matching signature at signatureIndex, 
+					// so use expression from rewrite rule with matching signature
+					setNextContext(new ExecutionContextExpression(rewriteRule.getExpression(), calledFunction));
 				}
 				else {
 					Pattern pattern = signature.get(patternIndex);
@@ -168,23 +128,22 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 					}
 					else {
 						AtomicPattern atom = pattern.get(atomIndex);
-						if (atomIndex < pattern.size() &&
-								(atom.isLiteral() || atom.isFunction())) {
-							currentRegexp.append(atom.getRegexp());
-							atomIndex++;
-						}
-						else if (atom.isExpression()) {
+						if (atom.isExpression()) {
 							if (previousResult != null) {
 								currentRegexp.append(previousResult.getStringValue());
 								atomIndex++;
 							}
 							else {
-								setNextContext(new ExecutionContextExpression());
+								setNextContext(new ExecutionContextExpression(atom.getExpression(), callingFunction));
 							}
+						}
+						else if (atom.isLiteral()) {
+							currentRegexp.append(atom.getRegexp());
+							atomIndex++;
 						}
 						else {
 							// for test purposes only
-							setState(ExecutionState.ERROR);
+							setState(ExecutionContextState.ERROR);
 						}
 					}
 				}
@@ -192,34 +151,7 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 		}
 		else {
 			// for testing purposes only
-			setState(ExecutionState.ERROR);
+			setState(ExecutionContextState.ERROR);
 		}
-	}
-
-	private void setNextContext(ExecutionContext nextContext) {
-		if (this.nextContext != null) {
-			// TODO throw some error 
-		}
-		this.nextContext = nextContext;
-		setState(ExecutionState.WAITING);		
-	}
-
-	@Override
-	public ExecutionContextFunctionCall toFunctionCall() {
-		return this;
-	}
-
-	@Override
-	public ExecutionContext getNextExecutionContext()
-			throws NextExecutionContextAccessedBeforeResolvedException {
-		if (getState() != ExecutionState.NEXT_CONTEXT_READY || this.nextContext == null) {
-			throw new NextExecutionContextAccessedBeforeResolvedException("Next ExecutionContext not yet ready.");
-		}
-		ExecutionContext nextContext = this.nextContext;
-		setState(ExecutionState.WAITING);
-		this.nextContext = null;
-		return nextContext;
-	}
-	
-	
+	}	
 }
