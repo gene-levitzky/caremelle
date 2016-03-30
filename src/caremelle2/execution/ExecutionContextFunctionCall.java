@@ -19,6 +19,8 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 	private final Function calledFunction;
 	private final Argument[] arguments;
 	
+	private AtomicExpressionFunctionCall callToken;
+	
 	private Map<String, Parameter> parameterMap;
 	
 	private int argumentIndex;
@@ -36,6 +38,8 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 		this.callingFunction = call.getCallingFunction();
 		this.calledFunction = call.getCalledFunction();
 		this.arguments = call.getArguments();
+		
+		callToken = call;
 		
 		argumentIndex = 0;
 		rewriteRuleIndex = 0;
@@ -142,7 +146,7 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 							atomIndex++;
 						}
 						else {
-							// for test purposes only
+							// should never be here
 							setState(ExecutionContextState.ERROR);
 						}
 					}
@@ -150,8 +154,13 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 			}
 		}
 		else {
-			// for testing purposes only
+			// should never be here
 			setState(ExecutionContextState.ERROR);
 		}
 	}	
+	
+	@Override
+	public String stringify() {
+		return "ExecutionContext[" + callToken.toString() + "]";
+	}
 }

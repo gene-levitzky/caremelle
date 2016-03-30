@@ -17,5 +17,10 @@ public abstract class Token {
 	public int getColumnNumber() {
 		return columnNumber;
 	}
+	
+	@Override
+	public String toString() {
+		return "Line: " + lineNumber + ", Column: " + columnNumber;
+	}
 
 }

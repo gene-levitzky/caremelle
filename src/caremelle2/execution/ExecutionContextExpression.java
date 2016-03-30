@@ -45,5 +45,10 @@ public class ExecutionContextExpression extends ExecutionContext {
 			}
 		}
 	}
+	
+	@Override
+	public String stringify() {
+		return "ExecutionContext[" + expression.toString() + "]";
+	}
 
 }

@@ -30,4 +30,8 @@ public class AtomicExpressionFunctionCall extends AtomicExpression {
 	public Function getCallingFunction() {
 		return callingFunction;
 	}
+	
+	@Override public String toString() {
+		return "FunctionCall::" + calledFunction.getIdentifier() + "@ " + super.toString();
+	}
 }

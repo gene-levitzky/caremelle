@@ -134,6 +134,13 @@ public abstract class ExecutionContext {
 		return resources;
 	}
 	
+	@Override
+	public String toString() {
+		return this.stringify();
+	}
+	
+	protected abstract String stringify();
+	
 	protected abstract void executeStepDelegate(ExecutionContextResult previousResult)
 			throws NoMatchingSignatureException, CaremelleBaseException;
 }

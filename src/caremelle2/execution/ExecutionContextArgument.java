@@ -35,5 +35,10 @@ public class ExecutionContextArgument extends ExecutionContext {
 			setResult(previousResult);
 		}
 	}
+	
+	@Override
+	protected String stringify() {
+		return "ExecutionContext[" + argument.toString() + "]";
+	}
 
 }
