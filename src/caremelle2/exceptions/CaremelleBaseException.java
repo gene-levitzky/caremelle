@@ -1,6 +1,6 @@
 package caremelle2.exceptions;
 
-public class CaremelleBaseException extends Throwable {
+public class CaremelleBaseException extends RuntimeException {
 
 	/**
 	 * 

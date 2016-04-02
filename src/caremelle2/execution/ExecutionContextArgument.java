@@ -22,12 +22,12 @@ public class ExecutionContextArgument extends ExecutionContext {
 		if (previousResult == null) {
 			Function function = argument.getFunction();
 			if (argument.getFunction() != null) {
-				ExecutionContextResult result = new ExecutionContextResult(function);
+				ExecutionContextResult result = ExecutionContextFactory.createExecutionFunctionContextResult(function);
 				setResult(result);
 			}
 			else {
 				Expression expression = argument.getExpression();
-				ExecutionContext next = new ExecutionContextExpression(expression, this.function);
+				ExecutionContext next = ExecutionContextFactory.createExecutionContextExpression(expression, this.function);
 				setNextContext(next);
 			}
 		}

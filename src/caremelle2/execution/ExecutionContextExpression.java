@@ -26,7 +26,9 @@ public class ExecutionContextExpression extends ExecutionContext {
 	public void executeStepDelegate(ExecutionContextResult previousResult)
 			throws NoMatchingSignatureException, CaremelleBaseException {
 		if (atomicExpressionIndex == expression.size()) {
-			ExecutionContextResult result = new ExecutionContextResult(resultBuilder.toString());
+			String expressionAsString = resultBuilder.toString();
+			ExecutionContextResult result = 
+					ExecutionContextFactory.createExecutionFunctionContextResult(expressionAsString);
 			setResult(result);
 		}
 		else {

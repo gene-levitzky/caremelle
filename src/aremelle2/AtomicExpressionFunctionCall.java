@@ -2,20 +2,20 @@ package aremelle2;
 
 public class AtomicExpressionFunctionCall extends AtomicExpression {
 	
-	private final Function calledFunction, callingFunction;
+	private final Function callee, caller;
 	private final Argument[] arguments;
 
 	public AtomicExpressionFunctionCall(
-			Function calledFunction, 
-			Function callingFunction, 
+			Function callee, 
+			Function caller, 
 			Argument[] arguments, 
 			int line, 
 			int col
 			) {
 		super(line, col);
 		
-		this.calledFunction = calledFunction;
-		this.callingFunction = callingFunction;
+		this.callee = callee;
+		this.caller = caller;
 		this.arguments = arguments;
 	}
 
@@ -23,15 +23,15 @@ public class AtomicExpressionFunctionCall extends AtomicExpression {
 		return arguments;
 	}
 
-	public Function getCalledFunction() {
-		return calledFunction;
+	public Function getCallee() {
+		return callee;
 	}
 
-	public Function getCallingFunction() {
-		return callingFunction;
+	public Function getCaller() {
+		return caller;
 	}
 	
 	@Override public String toString() {
-		return "FunctionCall::" + calledFunction.getIdentifier() + "@ " + super.toString();
+		return "FunctionCall::" + callee.getIdentifier() + "@ " + super.toString();
 	}
 }

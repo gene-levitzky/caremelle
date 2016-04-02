@@ -15,8 +15,8 @@ import aremelle2.Signature;
 
 public class ExecutionContextFunctionCall extends ExecutionContext {
 	
-	private final Function callingFunction;
-	private final Function calledFunction;
+	private final Function caller;
+	private final Function callee;
 	private final Argument[] arguments;
 	
 	private AtomicExpressionFunctionCall callToken;
@@ -35,8 +35,8 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 		
 		super();
 		
-		this.callingFunction = call.getCallingFunction();
-		this.calledFunction = call.getCalledFunction();
+		this.caller = call.getCallee();
+		this.callee = call.getCaller();
 		this.arguments = call.getArguments();
 		
 		callToken = call;
@@ -54,16 +54,16 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 		if (argumentIndex < arguments.length) {
 			problem = String.format("%d of %d arguments processed", argumentIndex, arguments.length);
 		}
-		else if (rewriteRuleIndex < calledFunction.size()) {
-			problem = String.format("%d of %d rewrite rules considered", rewriteRuleIndex, calledFunction.size());
+		else if (rewriteRuleIndex < callee.size()) {
+			problem = String.format("%d of %d rewrite rules considered", rewriteRuleIndex, callee.size());
 		}
 		else {
 			problem = "All arguments processed and all rewrite rules considered. This should never happen";
 		}
 		return String.format(
 				"Result of function %s, called by %s, has not yet been resolved; %d.", 
-				calledFunction.getIdentifier(),
-				callingFunction.getIdentifier(),
+				callee.getIdentifier(),
+				caller.getIdentifier(),
 				problem);
 	}
 	
@@ -72,9 +72,11 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 	public void executeStepDelegate(ExecutionContextResult previousResult) 
 			throws NoMatchingSignatureException, CaremelleBaseException {
 		
-		if (calledFunction.getExpression() != null) {
+		if (callee.getExpression() != null) {
 			if (previousResult == null) {
-				setNextContext(new ExecutionContextExpression(calledFunction.getExpression(), calledFunction));
+				ExecutionContext nextContext = 
+						ExecutionContextFactory.createExecutionContextExpression(callee.getExpression(), callee);
+				setNextContext(nextContext);
 			}
 			else {
 				setResult(previousResult);
@@ -83,19 +85,20 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 		else if (argumentIndex < arguments.length) {
 			if (previousResult == null) {
 				Argument arg = arguments[argumentIndex];
-				setNextContext(new ExecutionContextArgument(arg, callingFunction));
+				ExecutionContext nextContext = ExecutionContextFactory.createExecutionContextArgument(arg, caller);
+				setNextContext(nextContext);
 			}
 			else {
 				argumentIndex++;
 			}
 		}
-		else if (rewriteRuleIndex < calledFunction.size()) {
-			RewriteRule rewriteRule = calledFunction.get(rewriteRuleIndex);
+		else if (rewriteRuleIndex < callee.size()) {
+			RewriteRule rewriteRule = callee.get(rewriteRuleIndex);
 			if (signatureIndex == rewriteRule.size()) {						
 				throw new NoMatchingSignatureException(
-						calledFunction.getIdentifier(),
-						calledFunction.getLineNumber(),
-						calledFunction.getColumnNumber(),
+						callee.getIdentifier(),
+						callee.getLineNumber(),
+						callee.getColumnNumber(),
 						arguments);
 			}
 			else {
@@ -107,7 +110,9 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 				else if (patternIndex == signature.size()) {
 					// We have a matching signature at signatureIndex, 
 					// so use expression from rewrite rule with matching signature
-					setNextContext(new ExecutionContextExpression(rewriteRule.getExpression(), calledFunction));
+					ExecutionContext nextContext = 
+							ExecutionContextFactory.createExecutionContextExpression(rewriteRule.getExpression(), callee);
+					setNextContext(nextContext);
 				}
 				else {
 					Pattern pattern = signature.get(patternIndex);
@@ -138,7 +143,10 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 								atomIndex++;
 							}
 							else {
-								setNextContext(new ExecutionContextExpression(atom.getExpression(), callingFunction));
+								ExecutionContext nextContext = 
+										ExecutionContextFactory
+										.createExecutionContextExpression(atom.getExpression(), caller);
+								setNextContext(nextContext);
 							}
 						}
 						else if (atom.isLiteral()) {
