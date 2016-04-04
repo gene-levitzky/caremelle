@@ -1,4 +1,4 @@
-package caremelle2.exceptions;
+package caremelle2.execution.exceptions;
 
 public class ExecutionContextDoneException extends CaremelleBaseException {
 

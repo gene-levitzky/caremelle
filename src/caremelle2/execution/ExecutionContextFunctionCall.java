@@ -2,14 +2,15 @@ package caremelle2.execution;
 
 import java.util.Map;
 
-import caremelle2.exceptions.CaremelleBaseException;
-import caremelle2.exceptions.NoMatchingSignatureException;
+import caremelle2.execution.exceptions.CaremelleBaseException;
+import caremelle2.execution.exceptions.NoMatchingSignatureException;
 import aremelle2.Argument;
 import aremelle2.AtomicExpressionFunctionCall;
 import aremelle2.Function;
 import aremelle2.AtomicPattern;
 import aremelle2.Parameter;
 import aremelle2.Pattern;
+import aremelle2.Regexp;
 import aremelle2.RewriteRule;
 import aremelle2.Signature;
 
@@ -29,7 +30,7 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 	private int patternIndex;
 	private int atomIndex;
 	
-	private StringBuilder currentRegexp;
+	private Regexp currentRegexp;
 	
 	public ExecutionContextFunctionCall(AtomicExpressionFunctionCall call) {
 		
@@ -105,7 +106,7 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 				Signature signature = rewriteRule.get(signatureIndex);
 				if (patternIndex == 0) {
 					// We're starting a new patter, so reset the regexp.
-					currentRegexp = new StringBuilder("^");
+					currentRegexp = new Regexp();
 				}
 				else if (patternIndex == signature.size()) {
 					// We have a matching signature at signatureIndex, 
@@ -118,11 +119,7 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 					Pattern pattern = signature.get(patternIndex);
 					if (atomIndex == pattern.size()) {
 						// The pattern is complete, it is stored in currentRegexp
-						currentRegexp.append("$");
-						Parameter[] parameters = ParameterFactory.buildParameters(
-								arguments[patternIndex], 
-								currentRegexp.toString(), 
-								pattern);
+						Parameter[] parameters = ParameterFactory.buildParameters(arguments[patternIndex], currentRegexp, pattern);
 						if (parameters != null) {
 							for (Parameter parameter : parameters) {
 								parameterMap.put(parameter.getIdentifier(), parameter);
@@ -137,7 +134,7 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 					}
 					else {
 						AtomicPattern atom = pattern.get(atomIndex);
-						if (atom.isExpression()) {
+						if (atom.hasExpression()) {
 							if (previousResult != null) {
 								currentRegexp.append(previousResult.getStringValue());
 								atomIndex++;
@@ -149,13 +146,9 @@ public class ExecutionContextFunctionCall extends ExecutionContext {
 								setNextContext(nextContext);
 							}
 						}
-						else if (atom.isLiteral()) {
+						else {
 							currentRegexp.append(atom.getRegexp());
 							atomIndex++;
-						}
-						else {
-							// should never be here
-							setState(ExecutionContextState.ERROR);
 						}
 					}
 				}

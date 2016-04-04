@@ -21,11 +21,11 @@ public class ExecutionContextFactory {
 		return new ExecutionContextFunctionCall(aefc);
 	}
 	
-	public static ExecutionContextResult createExecutionFunctionContextResult(Function func) {
+	public static ExecutionContextResult createExecutionContextResult(Function func) {
 		return new ExecutionContextResult(func);
 	}
 	
-	public static ExecutionContextResult createExecutionFunctionContextResult(String string) {
+	public static ExecutionContextResult createExecutionContextResult(String string) {
 		return new ExecutionContextResult(string);
 	}
 

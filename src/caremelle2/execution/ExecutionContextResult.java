@@ -1,6 +1,6 @@
 package caremelle2.execution;
 
-import caremelle2.exceptions.InvalidExecutionContextResultTypeException;
+import caremelle2.execution.exceptions.InvalidExecutionContextResultTypeException;
 import aremelle2.Function;
 
 public class ExecutionContextResult {

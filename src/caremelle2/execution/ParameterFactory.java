@@ -9,14 +9,15 @@ import java.util.regex.Matcher;
 import aremelle2.Argument;
 import aremelle2.Parameter;
 import aremelle2.Pattern;
+import aremelle2.Regexp;
 
 public class ParameterFactory {
 
-	public static Parameter[] buildParameters(Argument arg, String regexp, Pattern pattern) {
+	public static Parameter[] buildParameters(Argument arg, Regexp regexp, Pattern pattern) {
 		
 		Parameter[] parameters = new Parameter[pattern.size()];
 		
-		Matcher matcher = compile(regexp).matcher(arg.toString());
+		Matcher matcher = compile(regexp.toString()).matcher(arg.toString());
 		if (!matcher.find()) {
 			return null;
 		}
@@ -27,13 +28,15 @@ public class ParameterFactory {
 				parameters[i] = new Parameter(pattern.get(i).getIdentifier(), match, null);
 			}
 			else {
+				parameters[i] = new Parameter(pattern.get(i).getIdentifier(), null, arg.getFunction());
 				if (i > 0) {
 					// TODO testing only
+					// function arguments can only be given to patterns consisting of a single parameter
 					System.err.println("Should never happen.");
 				}
 			}
 			group++;
-			group += pattern.get(i).getNumberOfCaptureGroups();
+			group += regexp.getNumberOfCaptureGroups(i);
 		}
 		
 		Map<String, Parameter> paramMap = new HashMap<String, Parameter>();

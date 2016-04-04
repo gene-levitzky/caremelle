@@ -14,7 +14,7 @@ public class Argument {
 		this.expression = expression;
 		this.function = null;
 	}
-	
+
 	public Function getFunction() {
 		return function;
 	}

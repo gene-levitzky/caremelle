@@ -1,13 +1,13 @@
 package caremelle2.execution;
 
-import caremelle2.exceptions.CannotProceedBeforeResultException;
-import caremelle2.exceptions.CaremelleBaseException;
-import caremelle2.exceptions.ExecutionContextDoneException;
-import caremelle2.exceptions.ExecutionContextErrorException;
-import caremelle2.exceptions.ExecutionContextNextContextReadyException;
-import caremelle2.exceptions.NextExecutionContextAccessedBeforeResolvedException;
-import caremelle2.exceptions.NoMatchingSignatureException;
-import caremelle2.exceptions.ResultAccessedBeforeResolvedException;
+import caremelle2.execution.exceptions.CannotProceedBeforeResultException;
+import caremelle2.execution.exceptions.CaremelleBaseException;
+import caremelle2.execution.exceptions.ExecutionContextDoneException;
+import caremelle2.execution.exceptions.ExecutionContextErrorException;
+import caremelle2.execution.exceptions.ExecutionContextNextContextReadyException;
+import caremelle2.execution.exceptions.NextExecutionContextAccessedBeforeResolvedException;
+import caremelle2.execution.exceptions.NoMatchingSignatureException;
+import caremelle2.execution.exceptions.ResultAccessedBeforeResolvedException;
 
 public abstract class ExecutionContext {
 	

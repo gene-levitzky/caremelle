@@ -2,41 +2,13 @@ package caremelle2.execution;
 
 import java.util.Stack;
 
-import aremelle2.AtomicExpressionFunctionCall;
-import aremelle2.Expression;
-import aremelle2.Argument;
-import aremelle2.Function;
-import aremelle2.Token;
-import caremelle2.exceptions.CaremelleBaseException;
-import caremelle2.exceptions.ExecutionContextErrorException;
-import caremelle2.exceptions.NoMatchingSignatureException;
+import caremelle2.execution.exceptions.CaremelleBaseException;
+import caremelle2.execution.exceptions.ExecutionContextErrorException;
+import caremelle2.execution.exceptions.NoMatchingSignatureException;
 
 public class Executor {
 	
-	private Function getBaseFunction(Function func, Argument[] args) {
-		AtomicExpressionFunctionCall functionCall = new AtomicExpressionFunctionCall(func, null, args, -1, -1);
-		Expression expr = new Expression(new AtomicExpressionFunctionCall[]{ functionCall }, -1, -1);
-		Function $ = new Function("$", "$", null, expr, -1, -1);
-		addNativeFunctionsToScope($);
-		return $;
-	}
-	
-	private void addNativeFunctionsToScope(Function f) {
-		
-	}
-	
-	public String execute(Token token, Argument[] args) throws CaremelleBaseException, NoMatchingSignatureException {
-		if (token instanceof Function) {
-			Function function = (Function) token;
-			Function $ = getBaseFunction(function, args);
-			ExecutionContext context = new ExecutionContextFunctionCall(
-					new AtomicExpressionFunctionCall(function, $, args, -1, -1));
-			return execute(context);
-		}
-		return null;
-	}
-	
-	private String execute(ExecutionContext initial) throws CaremelleBaseException, NoMatchingSignatureException {
+	public String execute(ExecutionContext initial) throws CaremelleBaseException, NoMatchingSignatureException {
 		
 		Stack<ExecutionContext> contextStack = new Stack<ExecutionContext>();
 		contextStack.push(initial);
