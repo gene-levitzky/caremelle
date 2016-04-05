@@ -3,6 +3,7 @@ package caremelle2.resources;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -16,6 +17,8 @@ import caremelle2.execution.ExecutionContext;
 import caremelle2.execution.ExecutionContextFunctionCall;
 import caremelle2.execution.exceptions.CaremelleBaseException;
 import caremelle2.execution.exceptions.NoMatchingSignatureException;
+import caremelle2.resources.ImportTreeConstructor.ImportTreeNode;
+import antlr2.AntlrManager;
 import antlr2.AremelleLexer;
 import antlr2.AremelleParser;
 import antlr2.AremelleParser.ArgumentsContext;
@@ -76,29 +79,17 @@ public class RepresentationConstructor {
 			throws FileNotFoundException, 
 			CannotImportFunctionException, 
 			IOException {
-		return parse(getLexer(new FileReader(file)));
+		return parse(AntlrManager.getLexer(new FileReader(file)));
 	}
 
 	public Representation build(FileReader fileReader) 
 			throws CannotImportFunctionException, IOException {
-		return parse(getLexer(fileReader));
+		return parse(AntlrManager.getLexer(fileReader));
 	}
 
 	public Representation build(String code) 
 			throws CannotImportFunctionException, IOException {
-		return parse(getLexer(code));
-	}
-	
-	/*
-	 * 
-	 */
-	
-	private AremelleLexer getLexer(FileReader reader) throws IOException {
-		return new AremelleLexer(new ANTLRInputStream(reader));
-	}
-
-	private AremelleLexer getLexer(String code) throws IOException {
-		return new AremelleLexer(new ANTLRInputStream(code));
+		return parse(AntlrManager.getLexer(code));
 	}
 	
 	/*
@@ -139,13 +130,7 @@ public class RepresentationConstructor {
 
 	private Representation parse(AremelleLexer lexer)
 			throws CannotImportFunctionException {
-		return constructRepresentation(getProgramContext(lexer));
-	}
-
-	private ProgramContext getProgramContext(AremelleLexer lexer) {
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		AremelleParser parser = new AremelleParser(tokens);
-		return parser.program();
+		return constructRepresentation(AntlrManager.getProgramContext(lexer));
 	}
 
 	public Representation constructRepresentation(ProgramContext pc) 
@@ -154,14 +139,30 @@ public class RepresentationConstructor {
 		Function mainFunction = constructFunction(pc.function());
 		Function globalFunction = getGlobalFunction(mainFunction);
 		
-		Function[] imports = getImportedFunctions(pc);
-		for (Function importee : imports) {
+		ImportTreeNode importRoot = null;
+		try {
+			importRoot = ImportTreeConstructor.getImportTreeNode(pc);
+		} catch (Exception e) {
+			// TODO
+			throw new CannotImportFunctionException("$");
+		}
+		
+		Stack<ImportTreeNode> stackNode = new Stack<ImportTreeNode>();
+		for (ImportTreeNode node : importRoot.getChildren().values()) {
+			stackNode.push(node);
+		}
+		while (!stackNode.isEmpty()) {
+			ImportTreeNode node = stackNode.pop();
+			String filename = node.getName();
+			ProgramContext importedContext;
 			try {
-				addFunctionToGlobalScope(importee);
-			} catch (Exception e) {
+				importedContext = AntlrManager.getProgramContextFromFilename(filename);
+			} catch (IOException e) {
 				// TODO
-				e.printStackTrace();
+				throw new CannotImportFunctionException(filename);
 			}
+			Function importedFunction = constructFunction(importedContext.function());
+			
 		}
 		
 		AtomicExpressionFunctionCall toplevel_aefc = new AtomicExpressionFunctionCall(
@@ -175,49 +176,6 @@ public class RepresentationConstructor {
 		return new Representation(initialContext, functionStore, scopeStore);
 	}
 
-	private Function[] getImportedFunctions(ProgramContext pc) 
-			throws CannotImportFunctionException {
-		List<Function> importList = new ArrayList<Function>();
-		for (int i = 0; i < pc.importStatement().size(); i++) {
-			ImportStatementContext isc = pc.importStatement(i);
-			String filename = isc.String().getText();
-			filename = filename.substring(1, filename.length() - 1);
-			try {
-				getImportedFunctions(new File(filename), importList);
-			}
-			catch(IOException e1) {
-				throw new CannotImportFunctionException(filename);
-			}
-		}
-		Function[] importedArray = new Function[importList.size()];
-		for (int i = 0; i < importedArray.length; i++) {
-			importedArray[i] = importList.get(i);
-		}
-		return importedArray;
-	}
-
-	private void getImportedFunctions(File file, List<Function> functions) 
-			throws FileNotFoundException, IOException, CannotImportFunctionException {
-		if (!file.exists()) {
-			throw new CannotImportFunctionException(file.getName());
-		}
-		if (file.getName().endsWith(".rml")) {
-			AremelleLexer lexer = getLexer(new FileReader(file));
-			ProgramContext importedProgram = getProgramContext(lexer);
-			Function importedFunction = constructFunction(importedProgram.function());
-			Function[] nestedImportedFunctions = getImportedFunctions(importedProgram);
-			for (Function f : nestedImportedFunctions) {
-				importedFunction.getScope().addFunction(f);
-			}
-			functions.add(importedFunction);
-		}
-		else if (file.isDirectory()){
-			File[] files = file.listFiles();
-			for (File f : files) {
-				getImportedFunctions(f, functions);
-			}
-		}
-	}
 
 	private Function constructFunction(FunctionContext functionContext) {
 		FunctionBodyContext fbc = functionContext.functionBody();
