@@ -37,10 +37,4 @@ public class AtomicPattern extends Token {
 	public boolean hasExpression() {
 		return getExpression() != null;
 	}
-
-	public int getNumberOfCaptureGroups() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 }
