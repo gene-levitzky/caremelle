@@ -6,24 +6,16 @@ public abstract class AtomicExpression extends Token {
 		super(lineNumber, columnNumber);
 	}
 
-	public boolean isLiteral() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public abstract boolean isLiteral();
 
-	public String getLiteralValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public abstract String getLiteralValue();
 
-	public boolean isIdentifier() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public abstract boolean isIdentifier();
 
-	public String getIdentifier() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public abstract String getIdentifier();
+	
+	public abstract boolean isFunction();
+	
+	public abstract Function getFunction();
 
 }

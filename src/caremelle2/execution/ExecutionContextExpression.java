@@ -1,6 +1,7 @@
 package caremelle2.execution;
 
 import aremelle2.AtomicExpression;
+import aremelle2.AtomicExpressionFunctionCall;
 import aremelle2.Expression;
 import aremelle2.Function;
 import caremelle2.execution.exceptions.CaremelleBaseException;
@@ -42,7 +43,13 @@ public class ExecutionContextExpression extends ExecutionContext {
 					resultBuilder.append(atom.getLiteralValue());
 				}
 				else if (atom.isIdentifier()) {
-					getResources().getIdentifierValue(atom.getIdentifier(), parentFunction);
+					String value = getResources().getIdentifierValue(atom.getIdentifier(), parentFunction);
+					resultBuilder.append(value);
+				}
+				else if (atom.isFunction()) {
+					AtomicExpressionFunctionCall aefc = (AtomicExpressionFunctionCall) atom;
+					ExecutionContext nextContext = ExecutionContextFactory.createExecutionContextFunctionCall(aefc);
+					setNextContext(nextContext);
 				}
 			}
 		}

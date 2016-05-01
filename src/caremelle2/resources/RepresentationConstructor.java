@@ -1,33 +1,24 @@
 package caremelle2.resources;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 
 import caremelle2.execution.ExecutionContext;
 import caremelle2.execution.ExecutionContextFunctionCall;
-import caremelle2.execution.exceptions.CaremelleBaseException;
-import caremelle2.execution.exceptions.NoMatchingSignatureException;
 import caremelle2.resources.ImportTreeConstructor.ImportTreeNode;
 import antlr2.AntlrManager;
 import antlr2.AremelleLexer;
-import antlr2.AremelleParser;
 import antlr2.AremelleParser.ArgumentsContext;
 import antlr2.AremelleParser.AtomicExpressionContext;
 import antlr2.AremelleParser.AtomicPatternContext;
 import antlr2.AremelleParser.ExpressionContext;
 import antlr2.AremelleParser.FunctionBodyContext;
 import antlr2.AremelleParser.FunctionContext;
-import antlr2.AremelleParser.ImportStatementContext;
 import antlr2.AremelleParser.PatternContext;
 import antlr2.AremelleParser.ProgramContext;
 import antlr2.AremelleParser.RewriteRuleContext;
@@ -38,13 +29,11 @@ import aremelle2.AtomicExpressionFunctionCall;
 import aremelle2.AtomicExpressionIdentifier;
 import aremelle2.AtomicExpressionLiteral;
 import aremelle2.AtomicPattern;
-import aremelle2.Parameter;
 import aremelle2.Expression;
 import aremelle2.Function;
 import aremelle2.Pattern;
 import aremelle2.Signature;
 import aremelle2.RewriteRule;
-import aremelle2.Token;
 import aremelle.exceptions.CannotImportFunctionException;
 
 /**
@@ -56,14 +45,48 @@ import aremelle.exceptions.CannotImportFunctionException;
  */
 public class RepresentationConstructor {
 	
-	private final Map<String, Function> functionStore;
-	private final Map<String, Scope> scopeStore;
+	private Map<String, Function> functionStore;
+	private Map<String, Scope> scopeStore;
 	
-	private final Argument[] arguments;
+	private Argument[] arguments;
 	
 	private final static String GLOBAL_FUNCTION_ID = "$";
+	
+	/*
+	 * Entry methods.
+	 */
 
-	public RepresentationConstructor(String[] args){
+	public Representation build(File file, String[] args) 
+			throws FileNotFoundException, 
+			CannotImportFunctionException, 
+			IOException {
+		init(args);
+		Representation representation = parse(AntlrManager.getLexer(new FileReader(file)));
+		reset();
+		return representation;
+	}
+
+	public Representation build(FileReader fileReader, String[] args) 
+			throws CannotImportFunctionException, IOException {
+		init(args);
+		Representation representation = parse(AntlrManager.getLexer(fileReader));
+		reset();
+		return representation;
+	}
+
+	public Representation build(String code, String[] args) 
+			throws CannotImportFunctionException, IOException {
+		init(args);
+		Representation representation = parse(AntlrManager.getLexer(code));
+		reset();
+		return representation;
+	}
+	
+	/*
+	 * 
+	 */
+	
+	private void init(String[] args) {
 		arguments = new Argument[args.length];
 		for (int i = 0; args != null && i < args.length; i++) {
 			Expression e = new Expression(new AtomicExpression[]{
@@ -75,36 +98,17 @@ public class RepresentationConstructor {
 		scopeStore = new HashMap<String, Scope>();
 	}
 	
-	/*
-	 * Entry methods.
-	 */
-
-	public Representation build(File file) 
-			throws FileNotFoundException, 
-			CannotImportFunctionException, 
-			IOException {
-		return parse(AntlrManager.getLexer(new FileReader(file)));
+	private void reset() {
+		arguments = null;
+		functionStore = null;
+		scopeStore = null;
 	}
-
-	public Representation build(FileReader fileReader) 
-			throws CannotImportFunctionException, IOException {
-		return parse(AntlrManager.getLexer(fileReader));
-	}
-
-	public Representation build(String code) 
-			throws CannotImportFunctionException, IOException {
-		return parse(AntlrManager.getLexer(code));
-	}
-	
-	/*
-	 * 
-	 */
 	
 	private Function getGlobalFunction(Function func) {
 		AtomicExpressionFunctionCall functionCall = new AtomicExpressionFunctionCall(func, null, arguments, -1, -1);
 		Expression expr = new Expression(new AtomicExpressionFunctionCall[]{ functionCall }, -1, -1);
-		Function $ = new Function(GLOBAL_FUNCTION_ID, GLOBAL_FUNCTION_ID, null, expr, -1, -1);
-		//addFunctionToGlobalScope($);
+		Function $ = new Function(GLOBAL_FUNCTION_ID, GLOBAL_FUNCTION_ID, -1, -1);
+		$.setExpression(expr);
 		functionStore.put($.getUniqueID(), $);
 		return $;
 	}
@@ -132,9 +136,11 @@ public class RepresentationConstructor {
 	private Representation constructRepresentation(ProgramContext pc) 
 			throws CannotImportFunctionException {
 		
+		Scope globalScope = new Scope(null);
+		scopeStore.put(GLOBAL_FUNCTION_ID, globalScope);
+		
 		Function mainFunction = constructFunction(pc.function(), GLOBAL_FUNCTION_ID);
 		Function globalFunction = getGlobalFunction(mainFunction);
-		Scope global = scopeStore.get(GLOBAL_FUNCTION_ID);
 		
 		ImportTreeNode importRoot = null;
 		try {
@@ -160,7 +166,7 @@ public class RepresentationConstructor {
 				throw new CannotImportFunctionException(filename);
 			}
 			Function importedFunction = constructFunction(importedContext.function(), GLOBAL_FUNCTION_ID);
-			global.addFunction(importedFunction);
+			globalScope.addFunction(importedFunction);
 		}
 		
 		AtomicExpressionFunctionCall toplevel_aefc = new AtomicExpressionFunctionCall(
@@ -187,18 +193,20 @@ public class RepresentationConstructor {
 		Scope thisScope = new Scope(parentScope);
 		scopeStore.put(id, thisScope);
 		
-		Expression expression = fbc.expression() != null ? constructExpression(fbc.expression()) : null;
+		int line = functionContext.start.getLine();
+		int col = functionContext.start.getCharPositionInLine();
+		Function function = new Function(functionName, id, line, col);
+		
+		Expression expression = fbc.expression() != null ? constructExpression(fbc.expression(), function) : null;
 		
 		int numRules = fbc.rewriteRules() == null ? 0 : fbc.rewriteRules().rewriteRule().size();
 		RewriteRule[] rules = new RewriteRule[numRules];
 		for (int i = 0; i < rules.length; i++) {
-			rules[i] = constructRewriteRule(fbc.rewriteRules().rewriteRule(i));
+			rules[i] = constructRewriteRule(fbc.rewriteRules().rewriteRule(i), function);
 		}
 		
-		int line = functionContext.start.getLine();
-		int col = functionContext.start.getCharPositionInLine();
-		
-		Function function = new Function(functionName, id, rules, expression, line, col);
+		function.setExpression(expression);
+		function.setRewriteRules(rules);
 		functionStore.put(id, function);
 		parentScope.addFunction(function);
 		
@@ -212,14 +220,14 @@ public class RepresentationConstructor {
 		return function;
 	}
 
-	private RewriteRule constructRewriteRule(RewriteRuleContext sc) {
-		Expression expression = constructExpression(sc.expression());
+	private RewriteRule constructRewriteRule(RewriteRuleContext sc, Function caller) {
+		Expression expression = constructExpression(sc.expression(), caller);
 		Signature[] signatures = new Signature[sc.signatures().signature().size()];
 		for (int i = 0; i < signatures.length; i++) {
 			SignatureContext psc = sc.signatures().signature(i);
 			Pattern[] patterns = new Pattern[psc.pattern().size()];
 			for (int j = 0; j < patterns.length; j++) {
-				patterns[j] = constructPattern(psc.pattern(j));
+				patterns[j] = constructPattern(psc.pattern(j), caller);
 			}
 			int line = psc.start.getLine();
 			int col = psc.start.getCharPositionInLine();
@@ -230,7 +238,7 @@ public class RepresentationConstructor {
 		return new RewriteRule(signatures, expression, line, col);
 	}
 
-	private Pattern constructPattern(PatternContext pc) {
+	private Pattern constructPattern(PatternContext pc, Function caller) {
 		AtomicPattern[] atomicPatterns = new AtomicPattern[pc.atomicPattern().size()];
 		for (int i = 0; i < atomicPatterns.length; i++) {
 
@@ -262,7 +270,7 @@ public class RepresentationConstructor {
 				else {
 					identifier = apc.regexp().Identifier() != null ? apc.regexp().Identifier().getText() : null;
 					ExpressionContext ec = apc.regexp().expression();
-					expr = ec == null ? null : constructExpression(ec);
+					expr = ec == null ? null : constructExpression(ec, caller);
 				}
 			}
 			int line = apc.start.getLine();
@@ -274,19 +282,15 @@ public class RepresentationConstructor {
 		return new Pattern(atomicPatterns, line, col);
 	}
 
-	private Expression constructExpression(ExpressionContext ec) {
+	private Expression constructExpression(ExpressionContext ec, Function caller) {
 		int size = ec.atomicExpression().size();
 		AtomicExpression[] atomicExpressions = new AtomicExpression[size];
 		for (int i = 0; i < size; i++) {
-			atomicExpressions[i] = constructAtomicExpression(ec.atomicExpression(i));
+			atomicExpressions[i] = constructAtomicExpression(ec.atomicExpression(i), caller);
 		}
 		int line = ec.start.getLine();
 		int col = ec.start.getCharPositionInLine();
 		return new Expression(atomicExpressions, line, col);
-	}
-	
-	private AtomicExpression constructAtomicExpression(AtomicExpressionContext aec) {
-		return constructAtomicExpression(aec, null);
 	}
 
 	private AtomicExpression constructAtomicExpression(AtomicExpressionContext aec, Function caller) {
@@ -308,7 +312,7 @@ public class RepresentationConstructor {
 			int numArgs = argsContext == null ? 0 : argsContext.argument().size();
 			Argument[] args = new Argument[numArgs];
 			for (int i = 0; i < args.length; i++) {
-				args[i] = new Argument(constructExpression(argsContext.argument(i).expression()));
+				args[i] = new Argument(constructExpression(argsContext.argument(i).expression(), caller));
 			}
 			String calleeName = aec.functionCall().Identifier().getText();
 			Function callee = scopeStore.get(caller.getUniqueID()).getFunction(calleeName);

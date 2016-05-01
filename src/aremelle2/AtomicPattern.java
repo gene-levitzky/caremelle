@@ -2,8 +2,8 @@ package aremelle2;
 
 public class AtomicPattern extends Token {
 	
-	private static final String ANY = ".+?";
-	private static final String ANY_OR_EMPTY = ".*?";
+	private static final String ANY_NONEMPTY = ".+?";
+	private static final String ANY = ".*?";
 	
 	private String identifier;
 	private String regexp;
@@ -15,7 +15,7 @@ public class AtomicPattern extends Token {
 		this.expression = expression;
 		
 		if (identifier != null) {
-			regexp = identifier.charAt(0) == '$' ? ANY_OR_EMPTY : ANY;
+			regexp = identifier.charAt(0) == '$' ? ANY : ANY_NONEMPTY;
 		}
 	}
 	
@@ -29,7 +29,7 @@ public class AtomicPattern extends Token {
 
 	public String getRegexp() {
 		if (regexp == null && identifier != null) {
-			regexp = identifier.charAt(0) == '$' ? ANY_OR_EMPTY : ANY;
+			regexp = identifier.charAt(0) == '$' ? ANY : ANY_NONEMPTY;
 		}
 		return regexp;
 	}

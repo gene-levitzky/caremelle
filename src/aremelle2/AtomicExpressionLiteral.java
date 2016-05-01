@@ -9,8 +9,34 @@ public class AtomicExpressionLiteral extends AtomicExpression {
 		this.literal = literal;
 	}
 
-	public String getLiteral() {
+	@Override
+	public boolean isLiteral() {
+		return true;
+	}
+
+	@Override
+	public String getLiteralValue() {
 		return literal;
+	}
+
+	@Override
+	public boolean isIdentifier() {
+		return false;
+	}
+
+	@Override
+	public String getIdentifier() {
+		return null;
+	}
+
+	@Override
+	public boolean isFunction() {
+		return false;
+	}
+
+	@Override
+	public Function getFunction() {
+		return null;
 	}
 
 }

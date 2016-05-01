@@ -34,4 +34,38 @@ public class AtomicExpressionFunctionCall extends AtomicExpression {
 	@Override public String toString() {
 		return "FunctionCall::" + callee.getIdentifier() + "@ " + super.toString();
 	}
+
+	@Override
+	public boolean isLiteral() {
+		return false;
+	}
+
+	@Override
+	public String getLiteralValue() {
+		// TODO
+		//throw new Exception("Not a literal Atomic Expression.");
+		return null;
+	}
+
+	@Override
+	public boolean isIdentifier() {
+		return false;
+	}
+
+	@Override
+	public String getIdentifier() {
+		// TODO
+		//throw new Exception("Not an identifier Atomic Expression.");
+		return null;
+	}
+
+	@Override
+	public boolean isFunction() {
+		return true;
+	}
+
+	@Override
+	public Function getFunction() {
+		return callee;
+	}
 }
